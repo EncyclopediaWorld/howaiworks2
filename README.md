@@ -33,6 +33,13 @@ No frameworks. No build step. No dependencies. Just open `index.html` in a brows
 
 ---
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=EncyclopediaWorld/howaiworks&type=Date)](https://star-history.com/#EncyclopediaWorld/howaiworks&Date)
+
+
+---
+
 ## Sections & Models
 
 ### Section I — The Mathematical Roots (1805–1957)
@@ -232,9 +239,6 @@ This project uses a dual-license structure:
 
 ---
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=EncyclopediaWorld/howaiworks&type=Date)](https://star-history.com/#EncyclopediaWorld/howaiworks&Date)
 
 ---
 
