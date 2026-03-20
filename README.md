@@ -1,5 +1,35 @@
 # How AI Works — An Interactive Visual History of AI/ML
 
+A static site showing interactive demos.
+This repository contains the original static HTML interactive demos.
+
+I added a minimal React + Vite scaffold under `src/` that can load the existing HTML pages into React routes.
+
+Quick start:
+
+1. Install dependencies:
+
+```
+npm install
+```
+
+2. Run dev server:
+
+```
+npm run dev
+```
+
+This repository has been migrated to a full React + Vite architecture. 
+- 首页由 `src/pages/Home.jsx` 渲染
+- 章节页由 `src/pages/SectionPage.jsx` 渲染
+- 动画 demo 模块在 `src/demos/`，通用占位在 `src/demos/genericDemo.js`
+- 旧 HTML 结构已不再直接引用（`index.html` 只包含 `#root`）
+
+The app was originally built by fetching `/index.html` and `/section1.html`..`/section8.html`, but has now been replaced by component-based routing and dynamic demo loading.
+
+---
+# How AI Works — An Interactive Visual History of AI/ML
+
 [![HTML5](https://img.shields.io/badge/HTML5-Canvas-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![License: Apache 2.0](https://img.shields.io/badge/Code-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
