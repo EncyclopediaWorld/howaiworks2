@@ -74,6 +74,7 @@ a:hover { color: var(--a3); }
     radial-gradient(ellipse 35% 25% at 25% 65%, rgba(255,107,107,.04), transparent),
     radial-gradient(ellipse 35% 25% at 75% 55%, rgba(167,139,250,.04), transparent);
 }
+.hero canvas { position: absolute; inset: 0; z-index: 0; }
 .hero-content { position: relative; z-index: 2; }
 .hero .badge {
   display: inline-flex; align-items: center; gap: .5rem;
@@ -98,6 +99,20 @@ a:hover { color: var(--a3); }
 .hero .scroll-cue {
   animation: fadeUp .8s .5s var(--ease) both, float 3s ease-in-out infinite 1s;
   color: var(--text3); font-size: .75rem; font-family: var(--mono);
+}
+.hero .stat-row {
+  display: flex; gap: 2.5rem; justify-content: center; margin-top: 2.5rem;
+  animation: fadeUp .8s .48s var(--ease) both;
+}
+.hero .stat { text-align: center; }
+.hero .stat .num {
+  font-family: var(--serif); font-size: 2rem; font-weight: 900;
+  background: linear-gradient(to right, var(--a2), var(--a3));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero .stat .lbl {
+  font-family: var(--mono); font-size: .6rem; color: var(--text3);
+  letter-spacing: .08em; text-transform: uppercase;
 }
 
 /* ===== TOC GRID ===== */
@@ -124,6 +139,32 @@ a:hover { color: var(--a3); }
 .toc-card:hover .model-tags span { color: var(--text2); border-color: var(--border); }
 .toc-card .enter-arrow { position: absolute; right: 1.5rem; bottom: 1.4rem; font-family: var(--mono); font-size: .72rem; opacity: 0; transform: translateX(-8px); transition: all .3s var(--ease); z-index: 1; }
 .toc-card:hover .enter-arrow { opacity: 1; transform: translateX(0); }
+.toc-card .count { font-family: var(--mono); font-size: .55rem; color: var(--text3); margin-top: .5rem; position: relative; z-index: 1; }
+
+.c1 { --card-accent: var(--a1); --card-glow: rgba(255,107,107,.05); }
+.c1::before { background: var(--a1); }
+.c1 .era-num { color: var(--a1); }
+.c2 { --card-accent: var(--a7); --card-glow: rgba(251,146,60,.05); }
+.c2::before { background: var(--a7); }
+.c2 .era-num { color: var(--a7); }
+.c3 { --card-accent: var(--a3); --card-glow: rgba(255,209,102,.05); }
+.c3::before { background: var(--a3); }
+.c3 .era-num { color: var(--a3); }
+.c4 { --card-accent: var(--a2); --card-glow: rgba(78,205,196,.05); }
+.c4::before { background: var(--a2); }
+.c4 .era-num { color: var(--a2); }
+.c5 { --card-accent: var(--a4); --card-glow: rgba(167,139,250,.05); }
+.c5::before { background: var(--a4); }
+.c5 .era-num { color: var(--a4); }
+.c6 { --card-accent: var(--a5); --card-glow: rgba(244,114,182,.05); }
+.c6::before { background: var(--a5); }
+.c6 .era-num { color: var(--a5); }
+.c7 { --card-accent: var(--a6); --card-glow: rgba(56,189,248,.05); }
+.c7::before { background: var(--a6); }
+.c7 .era-num { color: var(--a6); }
+.c8 { --card-accent: var(--a8); --card-glow: rgba(52,211,153,.05); }
+.c8::before { background: var(--a8); }
+.c8 .era-num { color: var(--a8); }
 
 /* ===== SECTION PAGE ===== */
 .section-hero { padding: 7.5rem 1.5rem 3.5rem; text-align: center; position: relative; overflow: hidden; }

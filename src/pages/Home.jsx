@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { sectionContent } from '../data/sectionContent'
+import { initParticles } from '../lib/shared'
 
 export default function Home() {
   const sections = Object.values(sectionContent)
+
+  useEffect(() => {
+    initParticles('particles')
+  }, [])
 
   return (
     <>
@@ -41,18 +46,26 @@ export default function Home() {
         <div className="toc-grid">
           {sections.map(section => (
             <Link key={section.id} to={`/section/${section.id}`} className={`toc-card c${section.id}`} style={{ textDecoration:'none', color:'inherit' }}>
-              <div className="era-num">Section {section.id} · {section.title}</div>
+              <div className="era-num">{section.era}</div>
               <h3>{section.title}</h3>
               <div className="era-desc">{sectionTitleDesc(section.id)}</div>
               <div className="model-tags">
-                {section.demos.map(demo => <span key={demo.id}>{demo.label}</span>)}
+                {sectionTagList(section.id).map(tag => <span key={tag}>{tag}</span>)}
               </div>
-              <div className="count">{section.demos.length} models · {section.demos.length} interactive demos</div>
+              <div className="count">{sectionCount(section.id)} models · {sectionCount(section.id)} interactive demos</div>
               <div className="enter-arrow" style={{ color:`var(--a${section.id})` }}>Enter →</div>
             </Link>
           ))}
         </div>
       </nav>
+
+      <footer>
+        Built with care to explain AI · Every demo is interactive — click, drag, and play!
+        <br />
+        <span style={{ fontSize: '.55rem', color: '#4a475a', marginTop: '.4rem', display: 'inline-block' }}>
+          Code licensed under <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noreferrer" style={{ color: '#4a475a', borderBottom: '1px dashed #4a475a' }}>Apache 2.0</a> · Written content under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer" style={{ color: '#4a475a', borderBottom: '1px dashed #4a475a' }}>CC BY 4.0</a> · See LICENSE, CONTENT_LICENSE, and BRAND_GUIDELINES for full details.
+        </span>
+      </footer>
     </>
   )
 }
@@ -62,11 +75,30 @@ function sectionTitleDesc(id){
     1: 'From least squares to the perceptron — mathematics lays the foundation for machine intelligence',
     2: 'Simple but powerful methods quietly accumulate during the AI winter',
     3: 'Backpropagation spreads widely; neural nets and decision trees advance side by side',
-    4: 'Deep learning begins with convolution and ensemble methods',
-    5: 'Autoencoders, boosting, and generative modeling',
-    6: 'Modern deep networks and regularization techniques',
-    7: 'Transformer revolution and language models',
-    8: 'Foundation models, diffusion and agent frameworks'
+    4: 'SVM, LSTM, Random Forest — classic methods flourish',
+    5: 'Layer-wise pretraining and word embeddings — the calm before the storm',
+    6: 'AlexNet ignites a revolution; GANs arrive on the scene',
+    7: '"Attention Is All You Need" changes everything',
+    8: 'Emergent abilities, RLHF — AI enters everyday life'
   }
   return d[id] || ''
+}
+
+function sectionTagList(id){
+  const d = {
+    1: ['Linear Regression', 'Bayes', 'Markov', 'Perceptron', 'Adaline'],
+    2: ['k-NN', 'Naive Bayes', 'Chain Rule'],
+    3: ['Neocognitron', 'RNN', 'Boltzmann', 'Backpropagation', 'Decision Tree'],
+    4: ['CNN', 'LSTM', 'SVM', 'GMM', 'Random Forest', 'AdaBoost'],
+    5: ['DBN', 'Sparse AE', 'Denoising AE', 'GBDT', 'NNLM'],
+    6: ['AlexNet', 'Dropout', 'Word2Vec', 'VAE', 'GAN', 'Seq2Seq', 'ResNet', 'BatchNorm'],
+    7: ['XGBoost', 'WaveNet', 'Transformer ⭐', 'ELMo', 'GPT-1', 'BERT', 'StyleGAN', 'GPT-2', 'T5'],
+    8: ['GPT-3', 'ViT', 'CLIP', 'Diffusion', 'ChatGPT', 'LLaMA', 'GPT-4', 'Claude', 'Sora']
+  }
+  return d[id] || []
+}
+
+function sectionCount(id){
+  const d = { 1: 5, 2: 3, 3: 5, 4: 6, 5: 5, 6: 8, 7: 9, 8: 9 }
+  return d[id] || 0
 }

@@ -1,4 +1,4 @@
-import { attachToWindow } from '/src/lib/shared.js'
+import { attachToWindow } from '../lib/shared.js'
 
 function extractScripts(htmlText){
   const re = /<script([^>]*)>([\s\S]*?)<\/script>/gi;
@@ -29,14 +29,11 @@ export async function loadScriptsFrom(path){
       document.body.appendChild(se)
       await new Promise(res=>se.addEventListener('load', res))
     }else if(s.code && s.code.trim()){
-      const wrapped = `import('/src/lib/shared.js').then(mod=>{ if(mod && mod.attachToWindow) mod.attachToWindow(); (function(){\n${s.code}\n})(); })`
-      const blob = new Blob([wrapped], {type:'text/javascript'})
-      const url = URL.createObjectURL(blob)
+      // Shared helpers are already attached to window; run original inline script as-is.
+      const wrapped = `(function(){\n${s.code}\n})();`
       const se = document.createElement('script')
-      se.type = 'module'
-      se.src = url
+      se.textContent = wrapped
       document.body.appendChild(se)
-      await new Promise(res=>se.addEventListener('load', ()=>{ URL.revokeObjectURL(url); res() }))
     }
   }
 
