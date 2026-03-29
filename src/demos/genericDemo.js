@@ -1,6 +1,4 @@
-import { createCanvas, addHint, addControls } from '/src/lib/shared.js'
-
-let cleanup = null
+import { createCanvas, addHint, addControls } from '../lib/shared.js'
 
 export function mountGeneric(containerId = 'demo-generic', title = 'Generic Demo', description = 'This is a generic demo placeholder.') {
   const el = document.getElementById(containerId)
@@ -60,10 +58,7 @@ export function mountGeneric(containerId = 'demo-generic', title = 'Generic Demo
 
   draw()
 
-  cleanup = () => { try { el.innerHTML = '' } catch (e) {} }
+  const cleanup = () => { try { el.innerHTML = '' } catch (e) {} }
   return cleanup
 }
 
-export function unmountGeneric() { if (cleanup) cleanup() }
-
-export default { mountGeneric, unmountGeneric }

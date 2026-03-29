@@ -1,8 +1,30 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
 .vite/
+
+# Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Environment variables (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# IDE artifacts
+.idea/
+.vscode/settings.json
+
+# Tooling cache
+.eslintcache
+coverage/

@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { sectionContent } from '../data/sectionContent'
-import { loadScriptsFrom } from '../legacy/loadScriptsFrom'
+
+const demoModules = import.meta.glob('/src/demos/**/*.js')
 
 export default function SectionPage() {
   const { idx } = useParams()
@@ -11,47 +12,34 @@ export default function SectionPage() {
   useEffect(() => {
     if (!section) return
 
-    // Keep React page structure, but run original scripts for all section demos (1-8).
-    if (sectionId >= 1 && sectionId <= 8) {
-      loadScriptsFrom(`/section${sectionId}.html`).catch(() => {})
-      return () => {
-        section.models.forEach(model => {
-          const el = document.getElementById(model.id)
-          if (el) el.innerHTML = ''
-        })
-      }
-    }
-
     let unmounts = []
 
     section.models.forEach(model => {
-      if (model.module && model.mount) {
-        import(model.module)
-          .then(mod => {
-            if (mod && typeof mod[model.mount] === 'function') {
-              const u = model.mount === 'mountGeneric'
-                ? mod[model.mount](model.id, model.name, model.text)
-                : mod[model.mount](model.id)
-              if (typeof u === 'function') unmounts.push(u)
-            }
-          })
-          .catch(() => {})
-      } else {
-        import('/src/demos/genericDemo.js')
-          .then(mod => {
-            if (mod && typeof mod.mountGeneric === 'function') {
-              const u = mod.mountGeneric(model.id, model.name, model.text)
-              if (typeof u === 'function') unmounts.push(u)
-            }
-          })
-          .catch(() => {})
-      }
+      const modulePath = model.module || '/src/demos/genericDemo.js'
+      const mountName = model.mount || 'mountGeneric'
+      const load = demoModules[modulePath] || demoModules['/src/demos/genericDemo.js']
+      if (!load) return
+
+      load()
+        .then(mod => {
+          const mountFn =
+            (mod && typeof mod[mountName] === 'function' && mod[mountName]) ||
+            (mod && mod.default && typeof mod.default[mountName] === 'function' && mod.default[mountName])
+
+          if (typeof mountFn === 'function') {
+            const u = mountName === 'mountGeneric'
+              ? mountFn(model.id, model.name, model.text)
+              : mountFn(model.id)
+            if (typeof u === 'function') unmounts.push(u)
+          }
+        })
+        .catch(err => { console.error('[demo load error]', err) })
     })
 
     return () => {
-      unmounts.reverse().forEach(fn => { try { fn() } catch (e) {} })
+      unmounts.reverse().forEach(fn => { try { fn() } catch { /* cleanup */ } })
     }
-  }, [section])
+  }, [section, sectionId])
 
   if (!section) {
     return (

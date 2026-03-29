@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
+const sectionsDir = path.join(root, 'content', 'sections');
 const raw = fs.readFileSync(path.join(root, 'src/data/sectionContent.js'), 'utf8');
 const expr = raw
   .replace('export const sectionContent =', '')
@@ -11,7 +12,7 @@ const sectionContent = eval(`(${expr})`);
 
 let ok = true;
 for (let i = 1; i <= 8; i++) {
-  const html = fs.readFileSync(path.join(root, `section${i}.html`), 'utf8');
+  const html = fs.readFileSync(path.join(sectionsDir, `section${i}.html`), 'utf8');
   const ids = [...html.matchAll(/class="mc-demo" id="([^"]+)"/g)].map((m) => m[1]);
   const models = sectionContent[i]?.models ?? [];
   const dataIds = models.map((m) => m.id);

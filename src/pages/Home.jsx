@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { sectionContent } from '../data/sectionContent'
 import { initParticles } from '../lib/shared'
@@ -30,8 +30,8 @@ export default function Home() {
             <div className="badge" style={{ marginBottom:0 }}><span></span>Interactive · 1805 → 2025</div>
           </div>
           <h1>How AI Works</h1>
-          <p className="sub">A hands-on journey through 50 landmark models that shaped artificial intelligence — from Gauss to GPT. Every model has an interactive demo you can touch. See <a href="https://github.com/EncyclopediaWorld/howaiworks" target="_blank" rel="noopener" style={{ color:'var(--a2)', borderBottom:'1px dashed var(--a2)' }}>GitHub Repository</a>.</p>
-          <div className="author-line"><a href="https://yushundong.github.io" target="_blank" rel="noopener">Dr. Yushun Dong · Florida State University</a></div>
+          <p className="sub">A hands-on journey through 50 landmark models that shaped artificial intelligence — from Gauss to GPT. Every model has an interactive demo you can touch. See <a href="https://github.com/EncyclopediaWorld/howaiworks" target="_blank" rel="noopener noreferrer" style={{ color:'var(--a2)', borderBottom:'1px dashed var(--a2)' }}>GitHub Repository</a>.</p>
+          <div className="author-line"><a href="https://yushundong.github.io" target="_blank" rel="noopener noreferrer">Dr. Yushun Dong · Florida State University</a></div>
           <div className="stat-row">
             <div className="stat"><div className="num">50</div><div className="lbl">Models</div></div>
             <div className="stat"><div className="num">220</div><div className="lbl">Years</div></div>

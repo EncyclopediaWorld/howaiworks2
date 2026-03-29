@@ -133,7 +133,7 @@ export function shimPointerToMouse(canvas){
 
   canvas.addEventListener('pointerdown', (pe) => {
     if(pe.pointerType === 'mouse') return;
-    try{ canvas.setPointerCapture(pe.pointerId); }catch(e){}
+    try{ canvas.setPointerCapture(pe.pointerId); }catch{ /* ignore */ }
     start = {x: pe.clientX, y: pe.clientY};
     fire('mousemove', pe);
     fire('mousedown', pe);
