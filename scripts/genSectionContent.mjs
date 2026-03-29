@@ -18,7 +18,16 @@ const decode = (s = '') =>
     .replace(/\s+/g, ' ')
     .trim()
 
-const normalizeFormula = (s = '') => s
+const normalizeFormula = (s = '') =>
+  s
+    .replace(/ b minimize\b/g, ' b&nbsp;minimize')
+    .replace(/ P\(B\) posterior\b/g, ' P(B)&nbsp;posterior')
+    .replace(/\) memoryless property\b/g, ')&nbsp;memoryless property')
+    .replace(/\) update:\s*/g, ')&nbsp;update: ')
+    .replace(/ b Δw\s*=\s*/g, ' b&nbsp;Δw = ')
+    .replace(/\|\|w\|\| subject to\b/g, '||w||&nbsp;subject to')
+    .replace(/\) M:\s*/g, ')&nbsp;M: ')
+    .replace(/\) where\b/g, ')&nbsp;where')
 
 const fixLineageLinks = (s = '') =>
   s.replace(/section(\d+)\.html(#[^"']*)?/g, (_m, sid, hash = '') => `/section/${sid}${hash}`)
