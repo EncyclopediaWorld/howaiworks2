@@ -194,7 +194,8 @@ export function initParticles(id){
   }
 
   const ctx = c.getContext('2d');
-  let w, h, particles = [], mouse = {x:-1, y:-1};
+  let w, h, particles = [];
+  const mouse = {x:-1, y:-1};
   let running = true;
 
   function resize(){

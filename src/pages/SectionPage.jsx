@@ -12,7 +12,7 @@ export default function SectionPage() {
   useEffect(() => {
     if (!section) return
 
-    let unmounts = []
+    const unmounts = []
 
     section.models.forEach(model => {
       const modulePath = model.module || '/src/demos/genericDemo.js'
