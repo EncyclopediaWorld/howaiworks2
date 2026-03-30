@@ -13,6 +13,30 @@ export default function SectionPage() {
     if (!section) return
 
     const unmounts = []
+    const rafIds = []
+    let disposed = false
+
+    const mountWhenReady = (model, mountName, mountFn, attempt = 0) => {
+      if (disposed) return
+
+      const host = document.getElementById(model.id)
+      const ready = host && host.isConnected && host.clientWidth > 0
+
+      if (!ready) {
+        if (attempt < 10) {
+          const rafId = window.requestAnimationFrame(() => {
+            mountWhenReady(model, mountName, mountFn, attempt + 1)
+          })
+          rafIds.push(rafId)
+        }
+        return
+      }
+
+      const u = mountName === 'mountGeneric'
+        ? mountFn(model.id, model.name, model.text)
+        : mountFn(model.id)
+      if (typeof u === 'function') unmounts.push(u)
+    }
 
     section.models.forEach(model => {
       const modulePath = model.module || '/src/demos/genericDemo.js'
@@ -22,21 +46,22 @@ export default function SectionPage() {
 
       load()
         .then(mod => {
+          if (disposed) return
+
           const mountFn =
             (mod && typeof mod[mountName] === 'function' && mod[mountName]) ||
             (mod && mod.default && typeof mod.default[mountName] === 'function' && mod.default[mountName])
 
           if (typeof mountFn === 'function') {
-            const u = mountName === 'mountGeneric'
-              ? mountFn(model.id, model.name, model.text)
-              : mountFn(model.id)
-            if (typeof u === 'function') unmounts.push(u)
+            mountWhenReady(model, mountName, mountFn)
           }
         })
         .catch(err => { console.error('[demo load error]', err) })
     })
 
     return () => {
+      disposed = true
+      rafIds.forEach(id => window.cancelAnimationFrame(id))
       unmounts.reverse().forEach(fn => { try { fn() } catch { /* cleanup */ } })
     }
   }, [section, sectionId])
