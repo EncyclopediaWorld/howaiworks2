@@ -23,7 +23,7 @@ export const sectionContent = {
         "paper": "https://en.wikipedia.org/wiki/Least_squares",
         "text": "Legendre & Gauss's method of least squares — fit a straight line to scattered data by minimizing the sum of squared errors.",
         "lineage": "The mathematical foundation for all optimization-based learning; directly leads to <a href=\"/section/1#model-adaline\">Adaline</a> and modern <a href=\"/section/3#model-backprop\">Backpropagation</a>.",
-        "formula": "y = wx + b&nbsp;minimize Σ(yᵢ - (wxᵢ + b))²",
+        "formula": "y = wx + b minimize Σ(yᵢ - (wxᵢ + b))²",
         "module": "/src/demos/linearRegression.js",
         "mount": "mountLinearRegression"
       },
@@ -35,7 +35,7 @@ export const sectionContent = {
         "paper": "https://en.wikipedia.org/wiki/Bayes%27_theorem",
         "text": "Update your belief based on new evidence. Prior × likelihood → posterior. The core framework of probabilistic inference.",
         "lineage": "The foundation of probabilistic reasoning; directly enables <a href=\"/section/2#model-naivebayes\">Naive Bayes</a> classifiers and <a href=\"/section/4#model-gmm\">GMM+EM</a> clustering.",
-        "formula": "P(A|B) = P(B|A)·P(A) / P(B)&nbsp;posterior = likelihood × prior / evidence",
+        "formula": "P(A|B) = P(B|A)·P(A) / P(B) posterior = likelihood × prior / evidence",
         "module": "/src/demos/bayes.js",
         "mount": "mountBayes"
       },
@@ -47,7 +47,7 @@ export const sectionContent = {
         "paper": "https://en.wikipedia.org/wiki/Markov_chain",
         "text": "Memoryless state transitions — the next state depends only on the current state. Cornerstone of HMM, MCMC, and PageRank.",
         "lineage": "Inspires sequential modeling; its memoryless limitation motivates <a href=\"/section/3#model-rnn\">RNN</a> (which adds memory) and <a href=\"/section/3#model-boltzmann\">Boltzmann Machine</a> sampling.",
-        "formula": "P(Xₙ₊₁|Xₙ,Xₙ₋₁,...) = P(Xₙ₊₁|Xₙ)&nbsp;memoryless property",
+        "formula": "P(Xₙ₊₁|Xₙ,Xₙ₋₁,...) = P(Xₙ₊₁|Xₙ) memoryless property",
         "module": "/src/demos/markov.js",
         "mount": "mountMarkov"
       },
@@ -59,7 +59,7 @@ export const sectionContent = {
         "paper": "https://doi.org/10.1037/h0042519",
         "text": "Rosenblatt's first artificial neuron that could learn from data. Computes weighted sum of inputs; output 1 if above threshold, 0 otherwise.",
         "lineage": "Builds on <a href=\"/section/1#model-linreg\">Linear Regression</a> with a step activation; its linear-only limitation is fixed by <a href=\"/section/1#model-adaline\">Adaline</a> and later <a href=\"/section/3#model-backprop\">Backpropagation</a>.",
-        "formula": "y = step(w·x + b)&nbsp;update: w += η(target - y)·x",
+        "formula": "y = step(w·x + b) update: w += η(target - y)·x",
         "module": "/src/demos/perceptron.js",
         "mount": "mountPerceptron"
       },
@@ -71,7 +71,7 @@ export const sectionContent = {
         "paper": "https://en.wikipedia.org/wiki/ADALINE",
         "text": "Widrow & Hoff's adaptive linear neuron — unlike the Perceptron, Adaline computes error <strong>before</strong> the activation function, enabling true gradient descent (LMS rule). The decision boundary glides smoothly into place!",
         "lineage": "Improves on <a href=\"/section/1#model-perceptron\">Perceptron</a> by using continuous gradient descent instead of discrete updates; the LMS rule directly inspires <a href=\"/section/3#model-backprop\">Backpropagation</a>.",
-        "formula": "z = w·x + b&nbsp;Δw = η(target − z)·x&nbsp;error on raw output, not after step()",
+        "formula": "z = w·x + b Δw = η(target − z)·x error on raw output, not after step()",
         "module": "/src/demos/adaline.js",
         "mount": "mountAdaline"
       }
@@ -257,7 +257,7 @@ export const sectionContent = {
         "paper": "https://doi.org/10.1007/BF00994018",
         "text": "Vapnik's maximum-margin classifier — find the hyperplane that separates classes with the widest possible margin. Support vectors define the boundary.",
         "lineage": "Extends <a href=\"/section/2#model-knn\">k-NN</a>'s distance-based idea with kernel tricks for non-linear boundaries; dominated ML before <a href=\"/section/6#model-alexnet\">AlexNet</a> proved deep learning superior.",
-        "formula": "maximize margin = 2/||w||&nbsp;subject to yᵢ(w·xᵢ + b) ≥ 1",
+        "formula": "maximize margin = 2/||w|| subject to yᵢ(w·xᵢ + b) ≥ 1",
         "module": "/src/demos/section4Demos.js",
         "mount": "mountSvm"
       },
@@ -269,7 +269,7 @@ export const sectionContent = {
         "paper": "https://doi.org/10.1111/j.2517-6161.1977.tb01600.x",
         "text": "Fit a mixture of Gaussians to data using Expectation-Maximization. E-step: soft cluster assignment. M-step: update parameters. Iterate until convergence.",
         "lineage": "Applies <a href=\"/section/1#model-bayes\">Bayes' Theorem</a> to unsupervised clustering with latent variables; EM's iterative approach later inspires <a href=\"/section/6#model-vae\">VAE</a>'s variational inference.",
-        "formula": "E: P(k|xᵢ) = πₖN(xᵢ|μₖ,σₖ) / Σⱼ πⱼN(xᵢ|μⱼ,σⱼ)&nbsp;M: update μ,σ,π",
+        "formula": "E: P(k|xᵢ) = πₖN(xᵢ|μₖ,σₖ) / Σⱼ πⱼN(xᵢ|μⱼ,σⱼ) M: update μ,σ,π",
         "module": "/src/demos/section4Demos.js",
         "mount": "mountGmm"
       },
@@ -293,7 +293,7 @@ export const sectionContent = {
         "paper": "https://doi.org/10.1006/jcss.1997.1504",
         "text": "Freund & Schapire's adaptive boosting — train weak classifiers sequentially, each focusing on mistakes of previous ones by upweighting misclassified samples.",
         "lineage": "Introduces sequential boosting of <a href=\"/section/3#model-dtree\">Decision Tree</a> stumps; directly inspires <a href=\"/section/5#model-gbdt\">GBDT</a> (gradient-based boosting) and <a href=\"/section/7#model-xgboost\">XGBoost</a>.",
-        "formula": "H(x) = sign(Σ αₜhₜ(x))&nbsp;where αₜ = ½ ln((1-εₜ)/εₜ) — weight by accuracy",
+        "formula": "H(x) = sign(Σ αₜhₜ(x)) where αₜ = ½ ln((1-εₜ)/εₜ) — weight by accuracy",
         "module": "/src/demos/section4Demos.js",
         "mount": "mountAda"
       }
@@ -359,7 +359,7 @@ export const sectionContent = {
         "paper": "https://doi.org/10.1214/aos/1013203451",
         "text": "Friedman's gradient boosting — each new tree fits the RESIDUAL errors of the previous ensemble. Sequentially reduces loss by correcting current mistakes.",
         "lineage": "Replaces <a href=\"/section/4#model-adaboost\">AdaBoost</a>'s sample reweighting with gradient-based residual fitting on <a href=\"/section/3#model-dtree\">Decision Trees</a>; optimized into <a href=\"/section/7#model-xgboost\">XGBoost</a>.",
-        "formula": "F_m(x) = F_{m-1}(x) + η · h_m(x)&nbsp;where h_m fits the residuals r = y - F_{m-1}(x)",
+        "formula": "F_m(x) = F_{m-1}(x) + η · h_m(x) where h_m fits the residuals r = y - F_{m-1}(x)",
         "module": "/src/demos/section5Demos.js",
         "mount": "mountGbdt"
       },
