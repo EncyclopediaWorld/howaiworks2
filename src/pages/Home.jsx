@@ -6,6 +6,14 @@ import { initParticles } from '../lib/shared'
 export default function Home() {
   const sections = Object.values(sectionContent)
 
+  // Calculate statistics dynamically
+  const totalModels = sections.reduce((sum, section) => sum + section.models.length, 0)
+  const allYears = sections.flatMap(section => section.models.map(m => parseInt(m.year)))
+  const minYear = Math.min(...allYears)
+  const maxYear = Math.max(...allYears)
+  const yearSpan = maxYear - minYear
+  const totalEras = sections.length
+
   useEffect(() => {
     initParticles('particles')
   }, [])
@@ -30,12 +38,12 @@ export default function Home() {
             <div className="badge" style={{ marginBottom:0 }}><span></span>Interactive · 1805 → 2025</div>
           </div>
           <h1>How AI Works</h1>
-          <p className="sub">A hands-on journey through 50 landmark models that shaped artificial intelligence — from Gauss to GPT. Every model has an interactive demo you can touch. See <a href="https://github.com/EncyclopediaWorld/howaiworks" target="_blank" rel="noopener noreferrer" style={{ color:'var(--a2)', borderBottom:'1px dashed var(--a2)' }}>GitHub Repository</a>.</p>
+          <p className="sub">A hands-on journey through {totalModels} landmark models that shaped artificial intelligence — from Gauss to GPT. Every model has an interactive demo you can touch. See <a href="https://github.com/EncyclopediaWorld/howaiworks" target="_blank" rel="noopener noreferrer" style={{ color:'var(--a2)', borderBottom:'1px dashed var(--a2)' }}>GitHub Repository</a>.</p>
           <div className="author-line"><a href="https://yushundong.github.io" target="_blank" rel="noopener noreferrer">Dr. Yushun Dong · Florida State University</a></div>
           <div className="stat-row">
-            <div className="stat"><div className="num">50</div><div className="lbl">Models</div></div>
-            <div className="stat"><div className="num">220</div><div className="lbl">Years</div></div>
-            <div className="stat"><div className="num">8</div><div className="lbl">Eras</div></div>
+            <div className="stat"><div className="num">{totalModels}</div><div className="lbl">Models</div></div>
+            <div className="stat"><div className="num">{yearSpan}</div><div className="lbl">Years</div></div>
+            <div className="stat"><div className="num">{totalEras}</div><div className="lbl">Eras</div></div>
           </div>
           <div className="scroll-cue" style={{ marginTop:'2.5rem' }}>↓ scroll to explore</div>
         </div>
@@ -99,6 +107,5 @@ function sectionTagList(id){
 }
 
 function sectionCount(id){
-  const d = { 1: 5, 2: 3, 3: 5, 4: 6, 5: 5, 6: 8, 7: 9, 8: 9 }
-  return d[id] || 0
+  return sectionContent[id]?.models?.length || 0
 }
