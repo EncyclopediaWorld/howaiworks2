@@ -52,7 +52,13 @@ export default function SectionPage() {
   // Scroll to anchor when the URL hash changes or a new section is loaded
   useEffect(() => {
     const hash = location.hash?.slice(1)
-    if (hash) scrollToHash(hash)
+    if (hash) {
+      scrollToHash(hash)
+      return
+    }
+
+    // For normal section visits (no anchor), always start at the page top.
+    window.scrollTo({ top: 0, behavior: 'auto' })
   }, [sectionId, location.hash])
 
   // Mount / unmount interactive demo canvases for the current section
