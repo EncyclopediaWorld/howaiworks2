@@ -6,6 +6,36 @@ const demoModules = import.meta.glob('/src/demos/**/*.js')
 const TOTAL_SECTIONS = Object.keys(sectionContent).length
 const ROMAN = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI', 7: 'VII', 8: 'VIII' }
 
+function renderDemoLoadError(containerId) {
+  const host = document.getElementById(containerId)
+  if (!host) return
+  host.innerHTML = ''
+  const msg = document.createElement('div')
+  msg.className = 'btn'
+  msg.style.margin = '12px'
+  msg.style.display = 'inline-block'
+  msg.textContent = 'Demo failed to load. Please refresh this page.'
+  host.appendChild(msg)
+}
+
+function recoverFromChunkLoadError(err) {
+  const message = String(err?.message || err || '')
+  const isChunkLoadError = /Failed to fetch dynamically imported module|Importing a module script failed|ChunkLoadError|dynamically imported module/i.test(message)
+  if (!isChunkLoadError) return false
+
+  try {
+    const key = 'howaiworks2-chunk-reload-once'
+    if (window.sessionStorage.getItem(key)) return false
+    window.sessionStorage.setItem(key, '1')
+    const next = new URL(window.location.href)
+    next.searchParams.set('_r', String(Date.now()))
+    window.location.replace(next.toString())
+    return true
+  } catch {
+    return false
+  }
+}
+
 // Retry until the target element is in the DOM, then scroll to it.
 // The 600ms delay lets demo canvases finish mounting before we measure layout.
 function scrollToHash(hash, attempts = 0) {
@@ -95,7 +125,12 @@ export default function SectionPage() {
             (typeof mod.default?.[mountName] === 'function' && mod.default[mountName])
           if (mountFn) mountWhenReady(model, mountName, mountFn)
         })
-        .catch(err => console.error('[demo load error]', err))
+        .catch(err => {
+          console.error('[demo load error]', err)
+          if (!recoverFromChunkLoadError(err)) {
+            renderDemoLoadError(model.id)
+          }
+        })
     })
 
     return () => {
