@@ -324,7 +324,7 @@ export const sectionContent = {
         "text": "Hinton's breakthrough — train deep networks by stacking Restricted Boltzmann Machines one layer at a time. Each layer learns increasingly abstract features.",
         "lineage": "Stacks <a href=\"/section/3#model-boltzmann\">Boltzmann Machine</a> layers with greedy pretraining; this first successful deep network paves the way for <a href=\"/section/6#model-alexnet\">AlexNet</a> and all modern deep learning.",
         "formula": "Layer 1: learn edges → Layer 2: learn shapes → Layer 3: learn objects (greedy pretraining)",
-        "module": "/src/demos/section4Demos.js",
+        "module": "/src/demos/section5Demos.js",
         "mount": "mountDbn"
       },
       {

@@ -1,62 +1,95 @@
-import { useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useEffect, useRef, useCallback } from 'react'
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import { sectionContent } from '../data/sectionContent'
 
 const demoModules = import.meta.glob('/src/demos/**/*.js')
+const TOTAL_SECTIONS = Object.keys(sectionContent).length
+const ROMAN = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI', 7: 'VII', 8: 'VIII' }
+
+// Retry until the target element is in the DOM, then scroll to it.
+// The 600ms delay lets demo canvases finish mounting before we measure layout.
+function scrollToHash(hash, attempts = 0) {
+  if (!hash) return
+  if (!document.getElementById(hash)) {
+    if (attempts < 15) setTimeout(() => scrollToHash(hash, attempts + 1), 80)
+    return
+  }
+  setTimeout(() => {
+    document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, 600)
+}
+
+// Intercept clicks on raw <a href="/section/..."> links rendered via
+// dangerouslySetInnerHTML and route them through React Router.
+function useInternalLinkHandler(containerRef) {
+  const navigate = useNavigate()
+  const handler = useCallback((e) => {
+    const anchor = e.target.closest('a[href]')
+    const href = anchor?.getAttribute('href')
+    if (href?.startsWith('/section/')) {
+      e.preventDefault()
+      navigate(href)
+    }
+  }, [navigate])
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    el.addEventListener('click', handler)
+    return () => el.removeEventListener('click', handler)
+  }, [containerRef, handler])
+}
 
 export default function SectionPage() {
   const { idx } = useParams()
   const sectionId = Number(idx || 1)
   const section = sectionContent[sectionId]
+  const mainRef = useRef(null)
+  const location = useLocation()
 
+  useInternalLinkHandler(mainRef)
+
+  // Scroll to anchor when the URL hash changes or a new section is loaded
+  useEffect(() => {
+    const hash = location.hash?.slice(1)
+    if (hash) scrollToHash(hash)
+  }, [sectionId, location.hash])
+
+  // Mount / unmount interactive demo canvases for the current section
   useEffect(() => {
     if (!section) return
-
     const unmounts = []
     const rafIds = []
     let disposed = false
 
     const mountWhenReady = (model, mountName, mountFn, attempt = 0) => {
       if (disposed) return
-
       const host = document.getElementById(model.id)
-      const ready = host && host.isConnected && host.clientWidth > 0
-
-      if (!ready) {
-        if (attempt < 10) {
-          const rafId = window.requestAnimationFrame(() => {
-            mountWhenReady(model, mountName, mountFn, attempt + 1)
-          })
-          rafIds.push(rafId)
-        }
-        return
+      if (host?.isConnected && host.clientWidth > 0) {
+        const u = mountName === 'mountGeneric'
+          ? mountFn(model.id, model.name, model.text)
+          : mountFn(model.id)
+        if (typeof u === 'function') unmounts.push(u)
+      } else if (attempt < 10) {
+        const rafId = window.requestAnimationFrame(() => mountWhenReady(model, mountName, mountFn, attempt + 1))
+        rafIds.push(rafId)
       }
-
-      const u = mountName === 'mountGeneric'
-        ? mountFn(model.id, model.name, model.text)
-        : mountFn(model.id)
-      if (typeof u === 'function') unmounts.push(u)
     }
 
     section.models.forEach(model => {
       const modulePath = model.module || '/src/demos/genericDemo.js'
       const mountName = model.mount || 'mountGeneric'
-      const load = demoModules[modulePath] || demoModules['/src/demos/genericDemo.js']
+      const load = demoModules[modulePath] ?? demoModules['/src/demos/genericDemo.js']
       if (!load) return
-
       load()
         .then(mod => {
           if (disposed) return
-
           const mountFn =
-            (mod && typeof mod[mountName] === 'function' && mod[mountName]) ||
-            (mod && mod.default && typeof mod.default[mountName] === 'function' && mod.default[mountName])
-
-          if (typeof mountFn === 'function') {
-            mountWhenReady(model, mountName, mountFn)
-          }
+            (typeof mod[mountName] === 'function' && mod[mountName]) ||
+            (typeof mod.default?.[mountName] === 'function' && mod.default[mountName])
+          if (mountFn) mountWhenReady(model, mountName, mountFn)
         })
-        .catch(err => { console.error('[demo load error]', err) })
+        .catch(err => console.error('[demo load error]', err))
     })
 
     return () => {
@@ -77,20 +110,15 @@ export default function SectionPage() {
 
   return (
     <>
-      <div className="progress-bar" style={{ width: '100%', background: section.progress || `linear-gradient(90deg, ${section.color}, var(--a6))` }}></div>
+      <div className="progress-bar" style={{ width: '100%', background: section.progress || `linear-gradient(90deg, ${section.color}, var(--a6))` }} />
       <button className="back-top show" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>↑</button>
 
       <nav className="topnav">
         <Link to="/" className="logo">How AI Works</Link>
         <div className="nav-links">
-          <Link to="/section/1" className={sectionId === 1 ? 'active' : ''}>I</Link>
-          <Link to="/section/2" className={sectionId === 2 ? 'active' : ''}>II</Link>
-          <Link to="/section/3" className={sectionId === 3 ? 'active' : ''}>III</Link>
-          <Link to="/section/4" className={sectionId === 4 ? 'active' : ''}>IV</Link>
-          <Link to="/section/5" className={sectionId === 5 ? 'active' : ''}>V</Link>
-          <Link to="/section/6" className={sectionId === 6 ? 'active' : ''}>VI</Link>
-          <Link to="/section/7" className={sectionId === 7 ? 'active' : ''}>VII</Link>
-          <Link to="/section/8" className={sectionId === 8 ? 'active' : ''}>VIII</Link>
+          {[1, 2, 3, 4, 5, 6, 7, 8].map(n => (
+            <Link key={n} to={`/section/${n}`} className={sectionId === n ? 'active' : ''}>{ROMAN[n]}</Link>
+          ))}
         </div>
       </nav>
 
@@ -99,14 +127,16 @@ export default function SectionPage() {
         <h1>{section.title}</h1>
         <p>{section.desc}</p>
         <div className="nav-arrows">
-          {sectionId > 1 && <Link to={`/section/${sectionId - 1}`}>← Section {roman(sectionId - 1)}</Link>}
-          {sectionId === 1 && <Link to="/">← Home</Link>}
-          {sectionId < Object.keys(sectionContent).length && <Link to={`/section/${sectionId + 1}`}>Section {roman(sectionId + 1)} →</Link>}
-          {sectionId === Object.keys(sectionContent).length && <Link to="/">Home →</Link>}
+          {sectionId === 1
+            ? <Link to="/">← Home</Link>
+            : <Link to={`/section/${sectionId - 1}`}>← Section {ROMAN[sectionId - 1]}</Link>}
+          {sectionId < TOTAL_SECTIONS
+            ? <Link to={`/section/${sectionId + 1}`}>Section {ROMAN[sectionId + 1]} →</Link>
+            : <Link to="/">Home →</Link>}
         </div>
       </section>
 
-      <main className="models-container">
+      <main className="models-container" ref={mainRef}>
         {section.models.map(model => (
           <div key={model.id} className="model-card" id={model.anchorId || `model-${model.id.replace('demo-', '')}`}>
             <div className="mc-head">
@@ -116,28 +146,25 @@ export default function SectionPage() {
                   {model.name}{' '}
                   <a href={model.paper} target="_blank" rel="noreferrer" className="paper-link">Paper</a>
                 </h3>
-                <p dangerouslySetInnerHTML={{ __html: model.text }}></p>
-                {model.lineage && <div className="model-lineage" dangerouslySetInnerHTML={{ __html: model.lineage }}></div>}
+                <p dangerouslySetInnerHTML={{ __html: model.text }} />
+                {model.lineage && <div className="model-lineage" dangerouslySetInnerHTML={{ __html: model.lineage }} />}
               </div>
             </div>
-            {model.formula && <div className="mc-formula" style={{ color: section.color }} dangerouslySetInnerHTML={{ __html: model.formula }}></div>}
-            <div className="mc-demo" id={model.id}></div>
+            {model.formula && <div className="mc-formula" style={{ color: section.color }} dangerouslySetInnerHTML={{ __html: model.formula }} />}
+            <div className="mc-demo" id={model.id} />
           </div>
         ))}
       </main>
 
       <footer>
-        {sectionId === 1 && <Link to="/">← Home</Link>}
-        {sectionId > 1 && <Link to={`/section/${sectionId - 1}`}>← Section {roman(sectionId - 1)}</Link>}
-        {sectionId < Object.keys(sectionContent).length && <><span> · </span><Link to={`/section/${sectionId + 1}`}>Section {roman(sectionId + 1)} →</Link></>}
-        {sectionId === Object.keys(sectionContent).length && <><span> · </span><span style={{ color: 'var(--a8)' }}>Home · All 50 Models Complete! 🎉</span></>}
+        {sectionId === 1
+          ? <Link to="/">← Home</Link>
+          : <Link to={`/section/${sectionId - 1}`}>← Section {ROMAN[sectionId - 1]}</Link>}
+        {sectionId < TOTAL_SECTIONS
+          ? <><span> · </span><Link to={`/section/${sectionId + 1}`}>Section {ROMAN[sectionId + 1]} →</Link></>
+          : <><span> · </span><span style={{ color: 'var(--a8)' }}>Home · All 50 Models Complete! 🎉</span></>}
       </footer>
     </>
   )
-}
-
-function roman(num) {
-  const map = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI', 7: 'VII', 8: 'VIII' }
-  return map[num] || String(num)
 }
 

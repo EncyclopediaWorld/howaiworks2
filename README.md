@@ -69,8 +69,7 @@ Runtime flow:
 |  |  |- shared.js              # Canvas and interaction utilities
 |  |- assets/
 |     |- styles.css             # Global styles
-|- content/sections/            # Source section HTML artifacts
-|- scripts/                     # Generation and verification scripts
+|- scripts/                     # Optional maintenance scripts
 |- public/                      # Static deploy assets and fallbacks
 ```
 
@@ -133,7 +132,6 @@ Recommended utilities from `src/lib/shared.js`:
 
 ```bash
 npm run lint
-npm run verify
 npm run dev
 ```
 
@@ -143,15 +141,10 @@ npm run dev
 - `npm run build`: create production build
 - `npm run preview`: preview production build
 - `npm run lint`: run ESLint on source files
-- `npm run generate`: regenerate `src/data/sectionContent.js` from `content/sections/*.html`
-- `npm run verify`: verify consistency between section HTML and model registry
 
 ## Content Source of Truth
 
 - Runtime rendering reads from: `src/data/sectionContent.js`
-- Source artifacts for regeneration live in: `content/sections/`
-
-If you update section HTML artifacts, run `npm run generate` and then `npm run verify`.
 
 ## Contribution Guidelines
 

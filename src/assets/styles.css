@@ -181,6 +181,7 @@ a:hover { color: var(--a3); }
   background: var(--card); border: 1px solid var(--border);
   border-radius: 18px; overflow: hidden; margin-bottom: 2.8rem;
   transition: all .4s var(--ease); animation: fadeUp .6s var(--ease) both;
+  scroll-margin-top: 80px;
 }
 .model-card:hover { border-color: rgba(78,205,196,.2); box-shadow: 0 16px 60px rgba(0,0,0,.35), 0 0 30px rgba(78,205,196,.03); }
 .mc-head { padding: 1.6rem 1.6rem 1rem; display: flex; align-items: flex-start; gap: 1rem; }

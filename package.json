@@ -8,8 +8,6 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "generate": "node scripts/genSectionContent.mjs",
-    "verify": "node scripts/verify-sections.cjs",
     "lint": "eslint src",
     "predeploy": "npm run build",
     "deploy": "echo Use GitHub Actions deployment"
