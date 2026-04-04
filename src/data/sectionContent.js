@@ -160,6 +160,18 @@ export const sectionContent = {
         "mount": "mountNeocognitron"
       },
       {
+        "id": "demo-hopfield",
+        "anchorId": "model-hopfield",
+        "year": "1982",
+        "name": "Hopfield Network",
+        "paper": "https://doi.org/10.1073/pnas.79.8.2554",
+        "text": "Hopfield's associative memory — a network of binary neurons that stores patterns as energy minima. Corrupt a stored pattern with noise, then let neurons flip one-by-one to descend the energy landscape until the original is recalled.",
+        "lineage": "Inspires energy-based thinking that flows into <a href=\"/section/3#model-boltzmann\">Boltzmann Machine</a> (stochastic version) and, decades later, Transformer's attention mechanism (formal equivalence proven in 2020). 2024 Nobel Prize in Physics.",
+        "formula": "W = (1/N) Σₖ ξₖ ξₖᵀ   →   sᵢ ← sign(Σⱼ Wᵢⱼ sⱼ)   →   E = −½ sᵀWs (decreases monotonically)",
+        "module": "/src/demos/hopfield-section3.js",
+        "mount": "mountHopfield"
+      },
+      {
         "id": "demo-rnn",
         "anchorId": "model-rnn",
         "year": "1986",
