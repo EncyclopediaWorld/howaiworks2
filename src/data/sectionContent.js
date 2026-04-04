@@ -40,6 +40,18 @@ export const sectionContent = {
         "mount": "mountBayes"
       },
       {
+        "id": "demo-shannon",
+        "anchorId": "model-shannon",
+        "year": "1948",
+        "name": "Shannon's Information Theory",
+        "paper": "https://doi.org/10.1002/j.1538-7305.1948.tb01338.x",
+        "text": "Claude Shannon defined information as surprise: rare events carry more information than common ones. Entropy H = −Σ p log₂ p measures the average uncertainty in a distribution — the theoretical minimum bits needed per symbol.",
+        "lineage": "Formalizes the mathematics behind <a href=\"/section/2#model-naivebayes\">Naive Bayes</a>' probabilistic reasoning; entropy directly drives Information Gain in <a href=\"/section/3#model-dtree\">Decision Trees</a> and cross-entropy loss used by every modern neural network.",
+        "formula": "H(X) = −Σᵢ P(xᵢ) log₂ P(xᵢ)   (bits)   ·   H reaches maximum when all outcomes equiprobable",
+        "module": "/src/demos/shannon-section1.js",
+        "mount": "mountShannon"
+      },
+      {
         "id": "demo-markov",
         "anchorId": "model-markov",
         "year": "1906",
@@ -116,6 +128,18 @@ export const sectionContent = {
         "formula": "P(class|features) ∝ P(class) × ∏ P(featureᵢ | class)",
         "module": "/src/demos/naiveBayes-section2.js",
         "mount": "mountNaiveBayes"
+      },
+      {
+        "id": "demo-hmm",
+        "anchorId": "model-hmm",
+        "year": "1960s–70s",
+        "name": "Hidden Markov Model (HMM)",
+        "paper": "https://doi.org/10.1109/5.18626",
+        "text": "Extend the <a href=\"/section/1#model-markov\">Markov Chain</a> with hidden states you can't observe directly — only their noisy emissions. The Viterbi algorithm decodes the most likely hidden sequence given the observations.",
+        "lineage": "Applies <a href=\"/section/1#model-markov\">Markov Chain</a>'s state transitions to latent-variable modeling; dominated speech recognition for 40 years before being superseded by <a href=\"/section/4#model-lstm\">LSTM</a> and eventually <a href=\"/section/7#model-transformer\">Transformer</a>.",
+        "formula": "P(X,Z) = P(z₁) ∏ₜ P(zₜ|zₜ₋₁) P(xₜ|zₜ)   ·   Viterbi: δₜ(s) = max P(z₁…zₜ₋₁,xₜ|s)",
+        "module": "/src/demos/hmm-section2.js",
+        "mount": "mountHmm"
       },
       {
         "id": "demo-chain",
@@ -208,6 +232,18 @@ export const sectionContent = {
         "mount": "mountBackpropagation"
       },
       {
+        "id": "demo-qlearning",
+        "anchorId": "model-qlearning",
+        "year": "1989",
+        "name": "Q-Learning",
+        "paper": "https://doi.org/10.1007/BF00992698",
+        "text": "Watkins' model-free reinforcement learning: an agent explores a grid world, collects rewards, and updates a table of action-values Q(s,a). No environment model needed — pure trial-and-error with a Bellman update rule.",
+        "lineage": "Foundational RL algorithm that directly enables <a href=\"/section/6#model-dqn\">DQN</a> (replaces the Q-table with a deep network); the policy-optimization lineage leads through PPO to <a href=\"/section/8#model-chatgpt\">ChatGPT</a>'s RLHF training.",
+        "formula": "Q(s,a) ← Q(s,a) + α [ r + γ·max_a' Q(s',a') − Q(s,a) ]   (off-policy Bellman update)",
+        "module": "/src/demos/qlearning-section3.js",
+        "mount": "mountQLearning"
+      },
+      {
         "id": "demo-tree",
         "anchorId": "model-dtree",
         "year": "1986",
@@ -296,6 +332,18 @@ export const sectionContent = {
         "formula": "prediction = mode(tree₁(x), tree₂(x), ..., treeₙ(x)) — majority vote of random trees",
         "module": "/src/demos/randomForest-section4.js",
         "mount": "mountRf"
+      },
+      {
+        "id": "demo-pca",
+        "anchorId": "model-pca",
+        "year": "1901",
+        "name": "PCA (Principal Component Analysis)",
+        "paper": "https://doi.org/10.1080/14786440109462720",
+        "text": "Pearson's dimensionality reduction: find the orthogonal directions of maximum variance in data. Project onto the top-k eigenvectors of the covariance matrix to discard noise while preserving structure.",
+        "lineage": "The canonical linear embedding technique; its latent-space concept directly inspires <a href=\"/section/5#model-sparse-ae\">Sparse Autoencoder</a>, <a href=\"/section/6#model-vae\">VAE</a>, and every modern representation-learning method.",
+        "formula": "Cov = XᵀX/n   →   eigendecomposition   →   PC1 = argmax‖w‖=1 wᵀCovw   (max variance direction)",
+        "module": "/src/demos/pca-section4.js",
+        "mount": "mountPca"
       },
       {
         "id": "demo-ada",
