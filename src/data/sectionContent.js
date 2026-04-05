@@ -40,18 +40,6 @@ export const sectionContent = {
         "mount": "mountBayes"
       },
       {
-        "id": "demo-shannon",
-        "anchorId": "model-shannon",
-        "year": "1948",
-        "name": "Shannon's Information Theory",
-        "paper": "https://doi.org/10.1002/j.1538-7305.1948.tb01338.x",
-        "text": "Claude Shannon defined information as surprise: rare events carry more information than common ones. Entropy H = −Σ p log₂ p measures the average uncertainty in a distribution — the theoretical minimum bits needed per symbol.",
-        "lineage": "Formalizes the mathematics behind <a href=\"/section/2#model-naivebayes\">Naive Bayes</a>' probabilistic reasoning; entropy directly drives Information Gain in <a href=\"/section/3#model-dtree\">Decision Trees</a> and cross-entropy loss used by every modern neural network.",
-        "formula": "H(X) = −Σᵢ P(xᵢ) log₂ P(xᵢ)   (bits)   ·   H reaches maximum when all outcomes equiprobable",
-        "module": "/src/demos/shannon-section1.js",
-        "mount": "mountShannon"
-      },
-      {
         "id": "demo-markov",
         "anchorId": "model-markov",
         "year": "1906",
@@ -62,6 +50,30 @@ export const sectionContent = {
         "formula": "P(Xₙ₊₁|Xₙ,Xₙ₋₁,...) = P(Xₙ₊₁|Xₙ) memoryless property",
         "module": "/src/demos/markov-section1.js",
         "mount": "mountMarkov"
+      },
+      {
+        "id": "demo-mcp",
+        "anchorId": "model-mcp",
+        "year": "1943",
+        "name": "McCulloch-Pitts Neuron",
+        "paper": "https://doi.org/10.1007/BF02478259",
+        "text": "The first mathematical model of a neuron — binary output controlled by excitatory (+1) and inhibitory (−1) weighted inputs against a threshold θ. Can compute AND, OR, NOT and any logical function. Precursor to every artificial neuron.",
+        "lineage": "Takes <a href=\"/section/1#model-linreg\">Linear Regression</a>'s weighted sum and adds a binary threshold; Rosenblatt's <a href=\"/section/1#model-perceptron\">Perceptron</a> adds a learning rule on top, and <a href=\"/section/1#model-adaline\">Adaline</a> then replaces discrete updates with gradient descent.",
+        "formula": "y = 1  if  Σᵢ wᵢxᵢ ≥ θ,  else 0   (wᵢ ∈ {+1, −1},  xᵢ ∈ {0,1})",
+        "module": "/src/demos/mccullochPitts-section1.js",
+        "mount": "mountMcCullochPitts"
+      },
+      {
+        "id": "demo-shannon",
+        "anchorId": "model-shannon",
+        "year": "1948",
+        "name": "Shannon's Information Theory",
+        "paper": "https://doi.org/10.1002/j.1538-7305.1948.tb01338.x",
+        "text": "Claude Shannon defined information as surprise: rare events carry more information than common ones. Entropy H = −Σ p log₂ p measures the average uncertainty in a distribution — the theoretical minimum bits needed per symbol.",
+        "lineage": "Formalizes the mathematics behind <a href=\"/section/2#model-naivebayes\">Naive Bayes</a>' probabilistic reasoning; entropy directly drives Information Gain in <a href=\"/section/3#model-dtree\">Decision Trees</a> and cross-entropy loss used by every modern neural network.",
+        "formula": "H(X) = −Σᵢ P(xᵢ) log₂ P(xᵢ)   (bits)   ·   H reaches maximum when all outcomes equiprobable",
+        "module": "/src/demos/shannon-section1.js",
+        "mount": "mountShannon"
       },
       {
         "id": "demo-perceptron",
@@ -434,6 +446,30 @@ export const sectionContent = {
         "formula": "P(wₜ | wₜ₋₁, wₜ₋₂, ...) = softmax(W · tanh(C · [e(wₜ₋₁); e(wₜ₋₂); ...]))",
         "module": "/src/demos/nnlm-section5.js",
         "mount": "mountNnlm"
+      },
+      {
+        "id": "demo-rbm",
+        "anchorId": "model-rbm",
+        "year": "2006",
+        "name": "Restricted Boltzmann Machine (RBM)",
+        "paper": "https://doi.org/10.1162/neco.2006.18.7.1527",
+        "text": "Hinton's two-layer energy-based model: visible units at the bottom, hidden units on top, with no within-layer connections. Trained by Contrastive Divergence (CD-k): clamp real data, forward-pass, reconstruct, update weights to pull down energy on data and push it up on reconstructions.",
+        "lineage": "The direct building block stacked to form <a href=\"/section/5#model-dbn\">DBN</a> layers; its bidirectional generative structure leads to <a href=\"/section/6#model-vae\">VAE</a>, while Contrastive Divergence prefigures modern noise-contrastive estimation.",
+        "formula": "E(v,h)= −bᵀv − cᵀh − vᵀWh   ·   P(hⱼ=1|v)= σ(cⱼ+Wⱼv)   ·   ΔW≈⟨vh⟩_data−⟨vh⟩_recon",
+        "module": "/src/demos/rbm-section5.js",
+        "mount": "mountRbm"
+      },
+      {
+        "id": "demo-tsne",
+        "anchorId": "model-tsne",
+        "year": "2008",
+        "name": "t-SNE (t-distributed Stochastic Neighbor Embedding)",
+        "paper": "https://jmlr.org/papers/v9/vandermaaten08a.html",
+        "text": "van der Maaten & Hinton's non-linear dimensionality reduction: model pairwise similarities in high-dim as Gaussians (P_ij) and in 2D as Student-t distributions (Q_ij). Minimize KL(P‖Q) by gradient descent — nearby clusters snap together, distant ones push apart.",
+        "lineage": "Extends <a href=\"/section/4#model-pca\">PCA</a>'s linear projection to non-linear manifolds; uses the heavy-tailed t-distribution (vs Gaussian) to solve the crowding problem; standard tool for visualizing <a href=\"/section/6#model-word2vec\">Word2Vec</a> and transformer embeddings.",
+        "formula": "Q_ij = (1+‖yᵢ−yⱼ‖²)⁻¹ / Z   ·   ∂C/∂yᵢ = 4Σⱼ(Pᵢⱼ−Qᵢⱼ)(yᵢ−yⱼ)(1+‖yᵢ−yⱼ‖²)⁻¹",
+        "module": "/src/demos/tsne-section5.js",
+        "mount": "mountTsne"
       }
     ]
   },
@@ -464,6 +500,30 @@ export const sectionContent = {
         "formula": "227×227 → Conv(96) → Pool → Conv(256) → Pool → Conv(384) → Conv(384) → Conv(256) → FC → 1000 classes",
         "module": "/src/demos/alexNet-section6.js",
         "mount": "mountAlex"
+      },
+      {
+        "id": "demo-vggnet",
+        "anchorId": "model-vggnet",
+        "year": "2014",
+        "name": "VGGNet",
+        "paper": "https://arxiv.org/abs/1409.1556",
+        "text": "Simonyan & Zisserman's elegantly simple insight: replace large kernels (7×7, 11×11) with stacks of tiny 3×3 convolutions. Two 3×3 layers = 5×5 effective receptive field but fewer parameters and an extra non-linearity. Won ILSVRC 2014 localisation.",
+        "lineage": "Deepens <a href=\"/section/4#model-cnn\">CNN/LeNet</a> and <a href=\"/section/6#model-alexnet\">AlexNet</a> by replacing big kernels with depth; its 'only 3×3' philosophy directly inspires <a href=\"/section/6#model-resnet\">ResNet</a>'s building blocks and modern efficient architectures.",
+        "formula": "2×(3×3) = 5×5 RF,  18C² params vs 25C²   ·   3×(3×3) = 7×7 RF,  27C² vs 49C²",
+        "module": "/src/demos/vggnet-section6.js",
+        "mount": "mountVggnet"
+      },
+      {
+        "id": "demo-inception",
+        "anchorId": "model-inception",
+        "year": "2014",
+        "name": "Inception / GoogLeNet",
+        "paper": "https://arxiv.org/abs/1409.4842",
+        "text": "Szegedy's Inception module runs four parallel branches on the same input: 1×1, 3×3, 5×5 convolutions and a max-pool, then concatenates their outputs. Captures features at multiple scales simultaneously. 22 layers deep, yet only 4M parameters vs VGG's 138M.",
+        "lineage": "Rivals <a href=\"/section/6#model-vggnet\">VGGNet</a> at ILSVRC 2014 with far fewer parameters; the 1×1 bottleneck idea directly inspires <a href=\"/section/6#model-resnet\">ResNet</a>'s bottleneck blocks and modern efficient architectures.",
+        "formula": "Output = Concat[ Conv1×1(x), Conv3×3(x), Conv5×5(x), MaxPool(x) ]   (all at same spatial size)",
+        "module": "/src/demos/inception-section6.js",
+        "mount": "mountInception"
       },
       {
         "id": "demo-drop",
