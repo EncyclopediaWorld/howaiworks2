@@ -502,6 +502,18 @@ export const sectionContent = {
         "mount": "mountAlex"
       },
       {
+        "id": "demo-dqn",
+        "anchorId": "model-dqn",
+        "year": "2013",
+        "name": "DQN (Deep Q-Network)",
+        "paper": "https://arxiv.org/abs/1312.5602",
+        "text": "DeepMind's breakthrough combining Q-Learning with a deep neural network — plus experience replay and target networks — to master Atari games from raw pixels with no domain-specific knowledge.",
+        "lineage": "Merges <a href=\"/section/3#model-qlearning\">Q-Learning</a>'s temporal-difference updates with <a href=\"/section/6#model-alexnet\">AlexNet</a>'s deep CNN; experience replay pioneered the off-policy training paradigm used in <a href=\"/section/8#model-chatgpt\">RLHF</a> and modern RL.",
+        "formula": "Q(s,a) ← Q(s,a) + α[r + γ·max_a' Q_target(s',a') − Q(s,a)] + replay buffer",
+        "module": "/src/demos/dqn-section6.js",
+        "mount": "mountDqn"
+      },
+      {
         "id": "demo-vggnet",
         "anchorId": "model-vggnet",
         "year": "2014",
@@ -608,6 +620,18 @@ export const sectionContent = {
         "formula": "x̂ = (x − μ_batch) / √(σ²_batch + ε) · γ + β — normalize, then scale and shift (learnable)",
         "module": "/src/demos/batchNorm-section6.js",
         "mount": "mountBn"
+      },
+      {
+        "id": "demo-unet",
+        "anchorId": "model-unet",
+        "year": "2015",
+        "name": "U-Net",
+        "paper": "https://arxiv.org/abs/1505.04597",
+        "text": "Ronneberger's encoder-decoder network for biomedical image segmentation — skip connections copy feature maps from encoder to decoder, preserving fine-grained spatial detail that downsampling would otherwise lose.",
+        "lineage": "Extends autoencoder with skip connections (like <a href=\"/section/6#model-resnet\">ResNet</a>'s shortcuts) for dense prediction; its encoder-decoder + skip architecture is the backbone of <a href=\"/section/8#model-diffusion\">Diffusion Models</a>' U-Net denoiser.",
+        "formula": "skip: enc_out → concat → dec_in — skip connection preserves spatial detail across resolution levels",
+        "module": "/src/demos/unet-section6.js",
+        "mount": "mountUnet"
       }
     ]
   },
@@ -652,6 +676,30 @@ export const sectionContent = {
         "mount": "mountWave"
       },
       {
+        "id": "demo-alphago",
+        "anchorId": "model-alphago",
+        "year": "2016",
+        "name": "AlphaGo",
+        "paper": "https://www.nature.com/articles/nature16961",
+        "text": "DeepMind's Go-playing system combining deep convolutional policy and value networks with Monte Carlo Tree Search. Defeated 9-dan world champion Lee Sedol 4-1 — long thought impossible for AI.",
+        "lineage": "Combines deep <a href=\"/section/4#model-cnn\">CNN</a>'s pattern recognition with <a href=\"/section/3#model-qlearning\">Q-Learning</a>'s value estimation and tree search; evolved into AlphaZero (chess, Go, shogi from scratch) then <a href=\"/section/8#model-alphafold\">AlphaFold</a>.",
+        "formula": "a* = argmax[ Q(s,a) + u(s,a) ]   u(s,a) = c·P(s,a)·√N(s) / (1+N(s,a))   (PUCT)",
+        "module": "/src/demos/alphaGo-section7.js",
+        "mount": "mountAlphaGo"
+      },
+      {
+        "id": "demo-yolo",
+        "anchorId": "model-yolo",
+        "year": "2016",
+        "name": "YOLO (You Only Look Once)",
+        "paper": "https://arxiv.org/abs/1506.02640",
+        "text": "Redmon's real-time object detector that unifies bounding-box regression and classification into a single CNN forward pass — unlike two-stage detectors (R-CNN). Processes images at 45 fps on a GPU.",
+        "lineage": "Unifies the two-stage <a href=\"/section/4#model-cnn\">CNN</a> detection pipeline into a single regression; its grid-cell approach inspired SSD, RetinaNet, and all modern single-stage detectors used today.",
+        "formula": "S×S grid → each cell predicts B boxes (x,y,w,h,conf) + C class probs — all in one forward pass",
+        "module": "/src/demos/yolo-section7.js",
+        "mount": "mountYolo"
+      },
+      {
         "id": "demo-transformer",
         "anchorId": "model-transformer",
         "year": "2017",
@@ -662,6 +710,18 @@ export const sectionContent = {
         "formula": "Attention(Q,K,V) = softmax(QKᵀ/√d) · V — every token looks at every other token",
         "module": "/src/demos/transformer-section7.js",
         "mount": "mountTransformer"
+      },
+      {
+        "id": "demo-ppo",
+        "anchorId": "model-ppo",
+        "year": "2017",
+        "name": "PPO (Proximal Policy Optimization)",
+        "paper": "https://arxiv.org/abs/1707.06347",
+        "text": "Schulman's practical policy gradient algorithm — clips the update ratio r(θ) to [1-ε, 1+ε] to prevent catastrophic policy updates. Simple to implement and reliable across environments.",
+        "lineage": "Simplifies TRPO's trust-region constraint into a clipped objective; became the default RL backbone and the <a href=\"/section/8#model-chatgpt\">RLHF</a> optimizer for ChatGPT, Claude, and almost every RLHF-tuned LLM.",
+        "formula": "L_CLIP(θ) = E[ min( r_t(θ)·Â_t,  clip(r_t(θ), 1±ε)·Â_t ) ]  where r_t = π_θ/π_θ_old",
+        "module": "/src/demos/ppo-section7.js",
+        "mount": "mountPpo"
       },
       {
         "id": "demo-elmo",
@@ -724,6 +784,18 @@ export const sectionContent = {
         "mount": "mountGpt2"
       },
       {
+        "id": "demo-transformer-xl",
+        "anchorId": "model-transformer-xl",
+        "year": "2019",
+        "name": "Transformer-XL",
+        "paper": "https://arxiv.org/abs/1901.02860",
+        "text": "Dai et al.'s segment-level recurrence — cache and reuse hidden states from the previous segment, allowing attention to span beyond a fixed context window without full recomputation.",
+        "lineage": "Extends <a href=\"/section/7#model-transformer\">Transformer</a> beyond fixed context with segment-level recurrence (like <a href=\"/section/4#model-lstm\">LSTM</a>'s memory but trainable); its relative positional encoding is a precursor to RoPE used in <a href=\"/section/8#model-llama\">LLaMA</a>.",
+        "formula": "h̃_τ = [SG(h_{τ-1}) ∘ h_τ]  (segment τ attends to cached segment τ-1) — relative position encoding",
+        "module": "/src/demos/transformerXL-section7.js",
+        "mount": "mountTransformerXl"
+      },
+      {
         "id": "demo-t5",
         "anchorId": "model-t5",
         "year": "2019",
@@ -775,6 +847,18 @@ export const sectionContent = {
         "mount": "mountVit"
       },
       {
+        "id": "demo-alphafold",
+        "anchorId": "model-alphafold",
+        "year": "2021",
+        "name": "AlphaFold 2",
+        "paper": "https://www.nature.com/articles/s41586-021-03819-2",
+        "text": "DeepMind's solution to the 50-year protein folding problem. Uses Evoformer transformers over MSA and pair representations, then Invariant Point Attention to predict 3D structures at near-experimental accuracy. Nobel Prize Chemistry 2024.",
+        "lineage": "Applies <a href=\"/section/7#model-transformer\">Transformer</a> attention to evolutionary multiple sequence alignments; its structural prediction breakthrough spawned AlphaFold 3, ESMFold, and transformed drug discovery worldwide.",
+        "formula": "MSA → Evoformer (48 blocks) → pair repr. → IPA structure module → 3D backbone angles (ψ, φ, ω)",
+        "module": "/src/demos/alphaFold-section8.js",
+        "mount": "mountAlphaFold"
+      },
+      {
         "id": "demo-clip",
         "anchorId": "model-clip",
         "year": "2021",
@@ -811,6 +895,18 @@ export const sectionContent = {
         "mount": "mountRlhf"
       },
       {
+        "id": "demo-stable-diff",
+        "anchorId": "model-stable-diffusion",
+        "year": "2022",
+        "name": "Stable Diffusion (LDM)",
+        "paper": "https://arxiv.org/abs/2112.10752",
+        "text": "Rombach et al.'s Latent Diffusion Model — run diffusion in the VAE's compressed latent space (8× smaller than pixels), guided by CLIP text embeddings. Makes high-quality generation accessible on consumer hardware.",
+        "lineage": "Compresses <a href=\"/section/8#model-diffusion\">Diffusion Models</a>' pixel-space process into <a href=\"/section/6#model-vae\">VAE</a>'s latent space with <a href=\"/section/8#model-clip\">CLIP</a> guidance; open weights (Aug 2022) democratized image generation and enabled <a href=\"/section/8#model-sora\">Sora</a>'s video DiT approach.",
+        "formula": "z_T ~ N(0,I) → z_0 via U-Net(z_t, t, τ_θ(text));  CFG: ε̂ = ε_uncond + γ(ε_cond − ε_uncond)",
+        "module": "/src/demos/stableDiffusion-section8.js",
+        "mount": "mountStableDiffusion"
+      },
+      {
         "id": "demo-llama",
         "anchorId": "model-llama",
         "year": "2023",
@@ -835,6 +931,18 @@ export const sectionContent = {
         "mount": "mountGpt4"
       },
       {
+        "id": "demo-gemini",
+        "anchorId": "model-gemini",
+        "year": "2023",
+        "name": "Gemini",
+        "paper": "https://arxiv.org/abs/2312.11805",
+        "text": "Google DeepMind's natively multimodal model — unlike GPT-4's adapter approach, Gemini is trained from scratch on text, images, audio, and video simultaneously in a unified token space.",
+        "lineage": "Unifies <a href=\"/section/7#model-transformer\">Transformer</a> with native multi-modal tokenization across all modalities; evolved into Gemini 1.5/2.0 with 1M+ context window and real-time multimodal agents (Project Astra).",
+        "formula": "All modalities → tokenize → shared embedding space → unified Transformer → any-modality output",
+        "module": "/src/demos/gemini-section8.js",
+        "mount": "mountGemini"
+      },
+      {
         "id": "demo-claude",
         "anchorId": "model-claude",
         "year": "2024",
@@ -857,6 +965,18 @@ export const sectionContent = {
         "formula": "Text prompt → Spacetime patches → Diffusion Transformer → Video frames (temporal consistency)",
         "module": "/src/demos/sora-section8.js",
         "mount": "mountSora"
+      },
+      {
+        "id": "demo-cot",
+        "anchorId": "model-cot",
+        "year": "2024",
+        "name": "Chain-of-Thought / o1",
+        "paper": "https://arxiv.org/abs/2201.11903",
+        "text": "Wei et al.'s Chain-of-Thought prompting showed 'Let's think step by step' dramatically improves multi-step reasoning. OpenAI o1 internalizes this as hidden thinking tokens at inference time, reaching human-expert level on AIME math and PhD science benchmarks.",
+        "lineage": "Leverages <a href=\"/section/8#model-gpt3\">GPT-3</a>'s emergent reasoning amplified by <a href=\"/section/8#model-chatgpt\">RLHF</a> training on reasoning traces; o1/DeepSeek-R1 (2025) extend CoT into the dominant paradigm for hard reasoning and autonomous AI agents.",
+        "formula": "P(answer | question, <think>step₁→step₂→…→stepₙ</think>) ≫ P(answer | question)",
+        "module": "/src/demos/cot-section8.js",
+        "mount": "mountCot"
       }
     ]
   }
