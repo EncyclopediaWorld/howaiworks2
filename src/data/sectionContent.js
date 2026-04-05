@@ -118,18 +118,6 @@ export const sectionContent = {
     },
     "models": [
       {
-        "id": "demo-knn",
-        "anchorId": "model-knn",
-        "year": "1967",
-        "name": "k-Nearest Neighbors",
-        "paper": "https://doi.org/10.1109/TIT.1967.1053964",
-        "text": "No training needed — classify a new point by majority vote of its k closest known samples. Simple yet surprisingly effective.",
-        "lineage": "A non-parametric alternative to <a href=\"/section/1#model-perceptron\">Perceptron</a>'s linear boundary; its distance-based approach later inspires kernel methods in <a href=\"/section/4#model-svm\">SVM</a>.",
-        "formula": "prediction = mode(labels of k nearest neighbors)",
-        "module": "/src/demos/knn-section2.js",
-        "mount": "mountKnn"
-      },
-      {
         "id": "demo-nb",
         "anchorId": "model-naivebayes",
         "year": "1960s",
@@ -140,6 +128,18 @@ export const sectionContent = {
         "formula": "P(class|features) ∝ P(class) × ∏ P(featureᵢ | class)",
         "module": "/src/demos/naiveBayes-section2.js",
         "mount": "mountNaiveBayes"
+      },
+      {
+        "id": "demo-knn",
+        "anchorId": "model-knn",
+        "year": "1967",
+        "name": "k-Nearest Neighbors",
+        "paper": "https://doi.org/10.1109/TIT.1967.1053964",
+        "text": "No training needed — classify a new point by majority vote of its k closest known samples. Simple yet surprisingly effective.",
+        "lineage": "A non-parametric alternative to <a href=\"/section/1#model-perceptron\">Perceptron</a>'s linear boundary; its distance-based approach later inspires kernel methods in <a href=\"/section/4#model-svm\">SVM</a>.",
+        "formula": "prediction = mode(labels of k nearest neighbors)",
+        "module": "/src/demos/knn-section2.js",
+        "mount": "mountKnn"
       },
       {
         "id": "demo-hmm",
@@ -208,18 +208,6 @@ export const sectionContent = {
         "mount": "mountHopfield"
       },
       {
-        "id": "demo-rnn",
-        "anchorId": "model-rnn",
-        "year": "1986",
-        "name": "RNN (Recurrent Neural Network)",
-        "paper": "https://doi.org/10.1038/323533a0",
-        "text": "Networks with loops — the hidden state acts as memory, carrying information from previous time steps. Essential for sequences like text, speech, and time series.",
-        "lineage": "Overcomes <a href=\"/section/1#model-markov\">Markov Chain</a>'s memoryless limitation by adding recurrence; its vanishing gradient problem is solved by <a href=\"/section/4#model-lstm\">LSTM</a>.",
-        "formula": "hₜ = tanh(W_h · hₜ₋₁ + W_x · xₜ + b) — hidden state = f(previous state + current input)",
-        "module": "/src/demos/rnn-section3.js",
-        "mount": "mountRnn"
-      },
-      {
         "id": "demo-boltz",
         "anchorId": "model-boltzmann",
         "year": "1985",
@@ -230,6 +218,18 @@ export const sectionContent = {
         "formula": "P(state) ∝ e^(-Energy/T) — lower energy = more probable. Energy = -Σ wᵢⱼ sᵢ sⱼ",
         "module": "/src/demos/boltzmann-section3.js",
         "mount": "mountBoltzmann"
+      },
+      {
+        "id": "demo-rnn",
+        "anchorId": "model-rnn",
+        "year": "1986",
+        "name": "RNN (Recurrent Neural Network)",
+        "paper": "https://doi.org/10.1038/323533a0",
+        "text": "Networks with loops — the hidden state acts as memory, carrying information from previous time steps. Essential for sequences like text, speech, and time series.",
+        "lineage": "Overcomes <a href=\"/section/1#model-markov\">Markov Chain</a>'s memoryless limitation by adding recurrence; its vanishing gradient problem is solved by <a href=\"/section/4#model-lstm\">LSTM</a>.",
+        "formula": "hₜ = tanh(W_h · hₜ₋₁ + W_x · xₜ + b) — hidden state = f(previous state + current input)",
+        "module": "/src/demos/rnn-section3.js",
+        "mount": "mountRnn"
       },
       {
         "id": "demo-bp",
@@ -244,18 +244,6 @@ export const sectionContent = {
         "mount": "mountBackpropagation"
       },
       {
-        "id": "demo-qlearning",
-        "anchorId": "model-qlearning",
-        "year": "1989",
-        "name": "Q-Learning",
-        "paper": "https://doi.org/10.1007/BF00992698",
-        "text": "Watkins' model-free reinforcement learning: an agent explores a grid world, collects rewards, and updates a table of action-values Q(s,a). No environment model needed — pure trial-and-error with a Bellman update rule.",
-        "lineage": "Foundational RL algorithm that directly enables <a href=\"/section/6#model-dqn\">DQN</a> (replaces the Q-table with a deep network); the policy-optimization lineage leads through PPO to <a href=\"/section/8#model-chatgpt\">ChatGPT</a>'s RLHF training.",
-        "formula": "Q(s,a) ← Q(s,a) + α [ r + γ·max_a' Q(s',a') − Q(s,a) ]   (off-policy Bellman update)",
-        "module": "/src/demos/qlearning-section3.js",
-        "mount": "mountQLearning"
-      },
-      {
         "id": "demo-tree",
         "anchorId": "model-dtree",
         "year": "1986",
@@ -266,6 +254,18 @@ export const sectionContent = {
         "formula": "Split on feature with max Information Gain = H(parent) - Σ (|child|/|parent|) H(child)",
         "module": "/src/demos/decisionTree-section3.js",
         "mount": "mountDecisionTree"
+      },
+      {
+        "id": "demo-qlearning",
+        "anchorId": "model-qlearning",
+        "year": "1989",
+        "name": "Q-Learning",
+        "paper": "https://doi.org/10.1007/BF00992698",
+        "text": "Watkins' model-free reinforcement learning: an agent explores a grid world, collects rewards, and updates a table of action-values Q(s,a). No environment model needed — pure trial-and-error with a Bellman update rule.",
+        "lineage": "Foundational RL algorithm that directly enables <a href=\"/section/6#model-dqn\">DQN</a> (replaces the Q-table with a deep network); the policy-optimization lineage leads through PPO to <a href=\"/section/8#model-chatgpt\">ChatGPT</a>'s RLHF training.",
+        "formula": "Q(s,a) ← Q(s,a) + α [ r + γ·max_a' Q(s',a') − Q(s,a) ]   (off-policy Bellman update)",
+        "module": "/src/demos/qlearning-section3.js",
+        "mount": "mountQLearning"
       }
     ]
   },
@@ -286,40 +286,16 @@ export const sectionContent = {
     },
     "models": [
       {
-        "id": "demo-cnn",
-        "anchorId": "model-cnn",
-        "year": "1998",
-        "name": "CNN / LeNet",
-        "paper": "http://yann.lecun.com/exdb/lenet/",
-        "text": "LeCun's convolutional neural network for handwritten digit recognition. Convolution filters slide over the image to extract features, then pooling shrinks them.",
-        "lineage": "Adds <a href=\"/section/3#model-backprop\">Backpropagation</a> training to <a href=\"/section/3#model-neocognitron\">Neocognitron</a>'s hierarchical design; directly leads to <a href=\"/section/6#model-alexnet\">AlexNet</a> and <a href=\"/section/6#model-resnet\">ResNet</a>.",
-        "formula": "Input → [Conv → ReLU → Pool] × N → Flatten → Dense → Output class",
-        "module": "/src/demos/cnn-section4.js",
-        "mount": "mountCnn"
-      },
-      {
-        "id": "demo-lstm",
-        "anchorId": "model-lstm",
-        "year": "1997",
-        "name": "LSTM (Long Short-Term Memory)",
-        "paper": "https://doi.org/10.1162/neco.1997.9.8.1735",
-        "text": "Hochreiter & Schmidhuber's solution to vanishing gradients. Three gates (forget, input, output) control what to remember, add, and output from the cell state.",
-        "lineage": "Solves <a href=\"/section/3#model-rnn\">RNN</a>'s vanishing gradient problem with gated memory; enables <a href=\"/section/6#model-seq2seq\">Seq2Seq</a> translation and <a href=\"/section/7#model-elmo\">ELMo</a> embeddings.",
-        "formula": "fₜ = σ(forget) iₜ = σ(input) oₜ = σ(output) cₜ = fₜ⊙cₜ₋₁ + iₜ⊙tanh(…)",
-        "module": "/src/demos/lstm-section4.js",
-        "mount": "mountLstm"
-      },
-      {
-        "id": "demo-svm",
-        "anchorId": "model-svm",
-        "year": "1995",
-        "name": "SVM (Support Vector Machine)",
-        "paper": "https://doi.org/10.1007/BF00994018",
-        "text": "Vapnik's maximum-margin classifier — find the hyperplane that separates classes with the widest possible margin. Support vectors define the boundary.",
-        "lineage": "Extends <a href=\"/section/2#model-knn\">k-NN</a>'s distance-based idea with kernel tricks for non-linear boundaries; dominated ML before <a href=\"/section/6#model-alexnet\">AlexNet</a> proved deep learning superior.",
-        "formula": "maximize margin = 2/||w|| subject to yᵢ(w·xᵢ + b) ≥ 1",
-        "module": "/src/demos/svm-section4.js",
-        "mount": "mountSvm"
+        "id": "demo-pca",
+        "anchorId": "model-pca",
+        "year": "1901",
+        "name": "PCA (Principal Component Analysis)",
+        "paper": "https://doi.org/10.1080/14786440109462720",
+        "text": "Pearson's dimensionality reduction: find the orthogonal directions of maximum variance in data. Project onto the top-k eigenvectors of the covariance matrix to discard noise while preserving structure.",
+        "lineage": "The canonical linear embedding technique; its latent-space concept directly inspires <a href=\"/section/5#model-sparse-ae\">Sparse Autoencoder</a>, <a href=\"/section/6#model-vae\">VAE</a>, and every modern representation-learning method.",
+        "formula": "Cov = XᵀX/n   →   eigendecomposition   →   PC1 = argmax‖w‖=1 wᵀCovw   (max variance direction)",
+        "module": "/src/demos/pca-section4.js",
+        "mount": "mountPca"
       },
       {
         "id": "demo-gmm",
@@ -334,28 +310,28 @@ export const sectionContent = {
         "mount": "mountGmm"
       },
       {
-        "id": "demo-rf",
-        "anchorId": "model-randomforest",
-        "year": "2001",
-        "name": "Random Forest",
-        "paper": "https://doi.org/10.1023/A:1010933404324",
-        "text": "Breiman's ensemble of decision trees — each tree trained on a random subset of data and features. Final prediction by majority vote.",
-        "lineage": "Ensembles many <a href=\"/section/3#model-dtree\">Decision Trees</a> via bagging to reduce overfitting; the ensemble idea is refined by <a href=\"/section/5#model-gbdt\">GBDT</a> and <a href=\"/section/7#model-xgboost\">XGBoost</a> using boosting instead.",
-        "formula": "prediction = mode(tree₁(x), tree₂(x), ..., treeₙ(x)) — majority vote of random trees",
-        "module": "/src/demos/randomForest-section4.js",
-        "mount": "mountRf"
+        "id": "demo-svm",
+        "anchorId": "model-svm",
+        "year": "1995",
+        "name": "SVM (Support Vector Machine)",
+        "paper": "https://doi.org/10.1007/BF00994018",
+        "text": "Vapnik's maximum-margin classifier — find the hyperplane that separates classes with the widest possible margin. Support vectors define the boundary.",
+        "lineage": "Extends <a href=\"/section/2#model-knn\">k-NN</a>'s distance-based idea with kernel tricks for non-linear boundaries; dominated ML before <a href=\"/section/6#model-alexnet\">AlexNet</a> proved deep learning superior.",
+        "formula": "maximize margin = 2/||w|| subject to yᵢ(w·xᵢ + b) ≥ 1",
+        "module": "/src/demos/svm-section4.js",
+        "mount": "mountSvm"
       },
       {
-        "id": "demo-pca",
-        "anchorId": "model-pca",
-        "year": "1901",
-        "name": "PCA (Principal Component Analysis)",
-        "paper": "https://doi.org/10.1080/14786440109462720",
-        "text": "Pearson's dimensionality reduction: find the orthogonal directions of maximum variance in data. Project onto the top-k eigenvectors of the covariance matrix to discard noise while preserving structure.",
-        "lineage": "The canonical linear embedding technique; its latent-space concept directly inspires <a href=\"/section/5#model-sparse-ae\">Sparse Autoencoder</a>, <a href=\"/section/6#model-vae\">VAE</a>, and every modern representation-learning method.",
-        "formula": "Cov = XᵀX/n   →   eigendecomposition   →   PC1 = argmax‖w‖=1 wᵀCovw   (max variance direction)",
-        "module": "/src/demos/pca-section4.js",
-        "mount": "mountPca"
+        "id": "demo-lstm",
+        "anchorId": "model-lstm",
+        "year": "1997",
+        "name": "LSTM (Long Short-Term Memory)",
+        "paper": "https://doi.org/10.1162/neco.1997.9.8.1735",
+        "text": "Hochreiter & Schmidhuber's solution to vanishing gradients. Three gates (forget, input, output) control what to remember, add, and output from the cell state.",
+        "lineage": "Solves <a href=\"/section/3#model-rnn\">RNN</a>'s vanishing gradient problem with gated memory; enables <a href=\"/section/6#model-seq2seq\">Seq2Seq</a> translation and <a href=\"/section/7#model-elmo\">ELMo</a> embeddings.",
+        "formula": "fₜ = σ(forget) iₜ = σ(input) oₜ = σ(output) cₜ = fₜ⊙cₜ₋₁ + iₜ⊙tanh(…)",
+        "module": "/src/demos/lstm-section4.js",
+        "mount": "mountLstm"
       },
       {
         "id": "demo-ada",
@@ -368,6 +344,30 @@ export const sectionContent = {
         "formula": "H(x) = sign(Σ αₜhₜ(x)) where αₜ = ½ ln((1-εₜ)/εₜ) — weight by accuracy",
         "module": "/src/demos/adaBoost-section4.js",
         "mount": "mountAda"
+      },
+      {
+        "id": "demo-cnn",
+        "anchorId": "model-cnn",
+        "year": "1998",
+        "name": "CNN / LeNet",
+        "paper": "http://yann.lecun.com/exdb/lenet/",
+        "text": "LeCun's convolutional neural network for handwritten digit recognition. Convolution filters slide over the image to extract features, then pooling shrinks them.",
+        "lineage": "Adds <a href=\"/section/3#model-backprop\">Backpropagation</a> training to <a href=\"/section/3#model-neocognitron\">Neocognitron</a>'s hierarchical design; directly leads to <a href=\"/section/6#model-alexnet\">AlexNet</a> and <a href=\"/section/6#model-resnet\">ResNet</a>.",
+        "formula": "Input → [Conv → ReLU → Pool] × N → Flatten → Dense → Output class",
+        "module": "/src/demos/cnn-section4.js",
+        "mount": "mountCnn"
+      },
+      {
+        "id": "demo-rf",
+        "anchorId": "model-randomforest",
+        "year": "2001",
+        "name": "Random Forest",
+        "paper": "https://doi.org/10.1023/A:1010933404324",
+        "text": "Breiman's ensemble of decision trees — each tree trained on a random subset of data and features. Final prediction by majority vote.",
+        "lineage": "Ensembles many <a href=\"/section/3#model-dtree\">Decision Trees</a> via bagging to reduce overfitting; the ensemble idea is refined by <a href=\"/section/5#model-gbdt\">GBDT</a> and <a href=\"/section/7#model-xgboost\">XGBoost</a> using boosting instead.",
+        "formula": "prediction = mode(tree₁(x), tree₂(x), ..., treeₙ(x)) — majority vote of random trees",
+        "module": "/src/demos/randomForest-section4.js",
+        "mount": "mountRf"
       }
     ]
   },
@@ -387,42 +387,6 @@ export const sectionContent = {
       "to": "/section/6"
     },
     "models": [
-      {
-        "id": "demo-dbn",
-        "anchorId": "model-dbn",
-        "year": "2006",
-        "name": "Deep Belief Network (DBN)",
-        "paper": "https://doi.org/10.1162/neco.2006.18.7.1527",
-        "text": "Hinton's breakthrough — train deep networks by stacking Restricted Boltzmann Machines one layer at a time. Each layer learns increasingly abstract features.",
-        "lineage": "Stacks <a href=\"/section/3#model-boltzmann\">Boltzmann Machine</a> layers with greedy pretraining; this first successful deep network paves the way for <a href=\"/section/6#model-alexnet\">AlexNet</a> and all modern deep learning.",
-        "formula": "Layer 1: learn edges → Layer 2: learn shapes → Layer 3: learn objects (greedy pretraining)",
-        "module": "/src/demos/dbn-section5.js",
-        "mount": "mountDbn"
-      },
-      {
-        "id": "demo-sae",
-        "anchorId": "model-sparse-ae",
-        "year": "2006",
-        "name": "Sparse Autoencoder",
-        "paper": "https://arxiv.org/abs/1312.5663",
-        "text": "Compress data through a bottleneck, then reconstruct it. Sparsity constraint ensures only a few neurons activate — forcing efficient, meaningful features.",
-        "lineage": "Learns compressed representations like <a href=\"/section/5#model-dbn\">DBN</a> but via reconstruction loss; its encode-decode structure directly leads to <a href=\"/section/6#model-vae\">VAE</a> (adds probabilistic sampling).",
-        "formula": "Input → Encoder (compress) → Bottleneck (sparse code) → Decoder (reconstruct) → Output ≈ Input",
-        "module": "/src/demos/sparseAutoencoder-section5.js",
-        "mount": "mountSae"
-      },
-      {
-        "id": "demo-dae",
-        "anchorId": "model-dae",
-        "year": "2008",
-        "name": "Denoising Autoencoder",
-        "paper": "https://doi.org/10.1145/1390156.1390294",
-        "text": "Corrupt the input with noise, then train the network to reconstruct the CLEAN original. Forces robust features that capture true data structure.",
-        "lineage": "Extends <a href=\"/section/5#model-sparse-ae\">Sparse Autoencoder</a> with noise-based regularization; the \"denoise to learn\" principle directly inspires <a href=\"/section/8#model-diffusion\">Diffusion Models</a>.",
-        "formula": "Clean x → Add noise → x̃ → Encoder → Decoder → x̂ ≈ x (not x̃!) — learn to denoise",
-        "module": "/src/demos/denoisingAutoencoder-section5.js",
-        "mount": "mountDae"
-      },
       {
         "id": "demo-gbdt",
         "anchorId": "model-gbdt",
@@ -448,6 +412,30 @@ export const sectionContent = {
         "mount": "mountNnlm"
       },
       {
+        "id": "demo-dbn",
+        "anchorId": "model-dbn",
+        "year": "2006",
+        "name": "Deep Belief Network (DBN)",
+        "paper": "https://doi.org/10.1162/neco.2006.18.7.1527",
+        "text": "Hinton's breakthrough — train deep networks by stacking Restricted Boltzmann Machines one layer at a time. Each layer learns increasingly abstract features.",
+        "lineage": "Stacks <a href=\"/section/3#model-boltzmann\">Boltzmann Machine</a> layers with greedy pretraining; this first successful deep network paves the way for <a href=\"/section/6#model-alexnet\">AlexNet</a> and all modern deep learning.",
+        "formula": "Layer 1: learn edges → Layer 2: learn shapes → Layer 3: learn objects (greedy pretraining)",
+        "module": "/src/demos/dbn-section5.js",
+        "mount": "mountDbn"
+      },
+      {
+        "id": "demo-sae",
+        "anchorId": "model-sparse-ae",
+        "year": "2006",
+        "name": "Sparse Autoencoder",
+        "paper": "https://arxiv.org/abs/1312.5663",
+        "text": "Compress data through a bottleneck, then reconstruct it. Sparsity constraint ensures only a few neurons activate — forcing efficient, meaningful features.",
+        "lineage": "Learns compressed representations like <a href=\"/section/5#model-dbn\">DBN</a> but via reconstruction loss; its encode-decode structure directly leads to <a href=\"/section/6#model-vae\">VAE</a> (adds probabilistic sampling).",
+        "formula": "Input → Encoder (compress) → Bottleneck (sparse code) → Decoder (reconstruct) → Output ≈ Input",
+        "module": "/src/demos/sparseAutoencoder-section5.js",
+        "mount": "mountSae"
+      },
+      {
         "id": "demo-rbm",
         "anchorId": "model-rbm",
         "year": "2006",
@@ -458,6 +446,18 @@ export const sectionContent = {
         "formula": "E(v,h)= −bᵀv − cᵀh − vᵀWh   ·   P(hⱼ=1|v)= σ(cⱼ+Wⱼv)   ·   ΔW≈⟨vh⟩_data−⟨vh⟩_recon",
         "module": "/src/demos/rbm-section5.js",
         "mount": "mountRbm"
+      },
+      {
+        "id": "demo-dae",
+        "anchorId": "model-dae",
+        "year": "2008",
+        "name": "Denoising Autoencoder",
+        "paper": "https://doi.org/10.1145/1390156.1390294",
+        "text": "Corrupt the input with noise, then train the network to reconstruct the CLEAN original. Forces robust features that capture true data structure.",
+        "lineage": "Extends <a href=\"/section/5#model-sparse-ae\">Sparse Autoencoder</a> with noise-based regularization; the \"denoise to learn\" principle directly inspires <a href=\"/section/8#model-diffusion\">Diffusion Models</a>.",
+        "formula": "Clean x → Add noise → x̃ → Encoder → Decoder → x̂ ≈ x (not x̃!) — learn to denoise",
+        "module": "/src/demos/denoisingAutoencoder-section5.js",
+        "mount": "mountDae"
       },
       {
         "id": "demo-tsne",
@@ -500,6 +500,30 @@ export const sectionContent = {
         "formula": "227×227 → Conv(96) → Pool → Conv(256) → Pool → Conv(384) → Conv(384) → Conv(256) → FC → 1000 classes",
         "module": "/src/demos/alexNet-section6.js",
         "mount": "mountAlex"
+      },
+      {
+        "id": "demo-w2v",
+        "anchorId": "model-word2vec",
+        "year": "2013",
+        "name": "Word2Vec",
+        "paper": "https://arxiv.org/abs/1301.3781",
+        "text": "Mikolov's word embeddings — learn vector representations where semantic relationships become arithmetic: King − Man + Woman ≈ Queen.",
+        "lineage": "Simplifies <a href=\"/section/5#model-nnlm\">NNLM</a> into efficient embedding training; its dense vectors become the input layer for <a href=\"/section/7#model-elmo\">ELMo</a>, <a href=\"/section/7#model-bert\">BERT</a>, and all modern NLP.",
+        "formula": "king − man + woman ≈ queen — semantic arithmetic in vector space!",
+        "module": "/src/demos/word2vec-section6.js",
+        "mount": "mountW2v"
+      },
+      {
+        "id": "demo-vae",
+        "anchorId": "model-vae",
+        "year": "2013",
+        "name": "VAE (Variational Autoencoder)",
+        "paper": "https://arxiv.org/abs/1312.6114",
+        "text": "Kingma's generative model — encode data into a smooth latent distribution, sample, and decode. The latent space is continuous and interpolatable.",
+        "lineage": "Adds probabilistic sampling to <a href=\"/section/5#model-sparse-ae\">Sparse Autoencoder</a> using <a href=\"/section/4#model-gmm\">GMM+EM</a>'s variational ideas; its latent space concept flows into <a href=\"/section/8#model-diffusion\">Diffusion Models</a>.",
+        "formula": "Encode: x → (μ, σ²) → sample z ~ N(μ,σ²) → Decode: z → x̂ — smooth generative latent space",
+        "module": "/src/demos/vae-section6.js",
+        "mount": "mountVae"
       },
       {
         "id": "demo-dqn",
@@ -548,30 +572,6 @@ export const sectionContent = {
         "formula": "During training: hᵢ = hᵢ × Bernoulli(p) — each neuron dropped with probability (1-p)",
         "module": "/src/demos/dropout-section6.js",
         "mount": "mountDrop"
-      },
-      {
-        "id": "demo-w2v",
-        "anchorId": "model-word2vec",
-        "year": "2013",
-        "name": "Word2Vec",
-        "paper": "https://arxiv.org/abs/1301.3781",
-        "text": "Mikolov's word embeddings — learn vector representations where semantic relationships become arithmetic: King − Man + Woman ≈ Queen.",
-        "lineage": "Simplifies <a href=\"/section/5#model-nnlm\">NNLM</a> into efficient embedding training; its dense vectors become the input layer for <a href=\"/section/7#model-elmo\">ELMo</a>, <a href=\"/section/7#model-bert\">BERT</a>, and all modern NLP.",
-        "formula": "king − man + woman ≈ queen — semantic arithmetic in vector space!",
-        "module": "/src/demos/word2vec-section6.js",
-        "mount": "mountW2v"
-      },
-      {
-        "id": "demo-vae",
-        "anchorId": "model-vae",
-        "year": "2013",
-        "name": "VAE (Variational Autoencoder)",
-        "paper": "https://arxiv.org/abs/1312.6114",
-        "text": "Kingma's generative model — encode data into a smooth latent distribution, sample, and decode. The latent space is continuous and interpolatable.",
-        "lineage": "Adds probabilistic sampling to <a href=\"/section/5#model-sparse-ae\">Sparse Autoencoder</a> using <a href=\"/section/4#model-gmm\">GMM+EM</a>'s variational ideas; its latent space concept flows into <a href=\"/section/8#model-diffusion\">Diffusion Models</a>.",
-        "formula": "Encode: x → (μ, σ²) → sample z ~ N(μ,σ²) → Decode: z → x̂ — smooth generative latent space",
-        "module": "/src/demos/vae-section6.js",
-        "mount": "mountVae"
       },
       {
         "id": "demo-gan",
@@ -847,6 +847,18 @@ export const sectionContent = {
         "mount": "mountVit"
       },
       {
+        "id": "demo-diff",
+        "anchorId": "model-diffusion",
+        "year": "2020",
+        "name": "Diffusion Models",
+        "paper": "https://arxiv.org/abs/2006.11239",
+        "text": "Gradually add noise to an image until destroyed, then train a neural net to reverse the process step by step. Generate by starting from pure noise and denoising.",
+        "lineage": "Revives <a href=\"/section/5#model-dae\">Denoising Autoencoder</a>'s \"learn to denoise\" principle; combined with <a href=\"/section/8#model-clip\">CLIP</a> text guidance, surpasses <a href=\"/section/6#model-gan\">GAN</a>/<a href=\"/section/7#model-stylegan\">StyleGAN</a> as the dominant generative paradigm (Stable Diffusion, DALL-E, Midjourney).",
+        "formula": "Forward: x₀ → x₁ → ... → x_T (pure noise) | Reverse: x_T → ... → x₁ → x₀ (image!)",
+        "module": "/src/demos/diffusion-section8.js",
+        "mount": "mountDiff"
+      },
+      {
         "id": "demo-alphafold",
         "anchorId": "model-alphafold",
         "year": "2021",
@@ -869,18 +881,6 @@ export const sectionContent = {
         "formula": "maximize similarity(image_embed, matching_text_embed) — contrastive learning across modalities",
         "module": "/src/demos/clip-section8.js",
         "mount": "mountClip"
-      },
-      {
-        "id": "demo-diff",
-        "anchorId": "model-diffusion",
-        "year": "2020",
-        "name": "Diffusion Models",
-        "paper": "https://arxiv.org/abs/2006.11239",
-        "text": "Gradually add noise to an image until destroyed, then train a neural net to reverse the process step by step. Generate by starting from pure noise and denoising.",
-        "lineage": "Revives <a href=\"/section/5#model-dae\">Denoising Autoencoder</a>'s \"learn to denoise\" principle; combined with <a href=\"/section/8#model-clip\">CLIP</a> text guidance, surpasses <a href=\"/section/6#model-gan\">GAN</a>/<a href=\"/section/7#model-stylegan\">StyleGAN</a> as the dominant generative paradigm (Stable Diffusion, DALL-E, Midjourney).",
-        "formula": "Forward: x₀ → x₁ → ... → x_T (pure noise) | Reverse: x_T → ... → x₁ → x₀ (image!)",
-        "module": "/src/demos/diffusion-section8.js",
-        "mount": "mountDiff"
       },
       {
         "id": "demo-rlhf",
