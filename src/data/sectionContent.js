@@ -23,7 +23,7 @@ export const sectionContent = {
         "paper": "https://en.wikipedia.org/wiki/Least_squares",
         "text": "Legendre & Gauss's method of least squares — fit a straight line to scattered data by minimizing the sum of squared errors.",
         "lineage": "The mathematical foundation for all optimization-based learning; directly leads to <a href=\"/section/1#model-adaline\">Adaline</a> and modern <a href=\"/section/3#model-backprop\">Backpropagation</a>.",
-        "formula": "y = wx + b  minimize Σ(yᵢ - (wxᵢ + b))²",
+        "formula": "y = wx + b &nbsp; minimize Σ(yᵢ - (wxᵢ + b))²",
         "module": "/src/demos/linearRegression-section1.js",
         "mount": "mountLinearRegression"
       },
