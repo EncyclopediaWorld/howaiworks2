@@ -341,7 +341,7 @@ export const sectionContent = {
         "paper": "https://doi.org/10.1006/jcss.1997.1504",
         "text": "Freund & Schapire's adaptive boosting — train weak classifiers sequentially, each focusing on mistakes of previous ones by upweighting misclassified samples.",
         "lineage": "Introduces sequential boosting of <a href=\"/section/3#model-dtree\">Decision Tree</a> stumps; directly inspires <a href=\"/section/5#model-gbdt\">GBDT</a> (gradient-based boosting) and <a href=\"/section/7#model-xgboost\">XGBoost</a>.",
-        "formula": "H(x) = sign(Σ αₜhₜ(x)) where αₜ = ½ ln((1-εₜ)/εₜ) — weight by accuracy",
+        "formula": "H(x) = sign(Σ αₜhₜ(x)) nbsp; where αₜ = ½ ln((1-εₜ)/εₜ) — weight by accuracy",
         "module": "/src/demos/adaBoost-section4.js",
         "mount": "mountAda"
       },
