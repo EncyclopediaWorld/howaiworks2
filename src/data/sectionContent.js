@@ -305,7 +305,7 @@ export const sectionContent = {
         "paper": "https://doi.org/10.1111/j.2517-6161.1977.tb01600.x",
         "text": "Fit a mixture of Gaussians to data using Expectation-Maximization. E-step: soft cluster assignment. M-step: update parameters. Iterate until convergence.",
         "lineage": "Applies <a href=\"/section/1#model-bayes\">Bayes' Theorem</a> to unsupervised clustering with latent variables; EM's iterative approach later inspires <a href=\"/section/6#model-vae\">VAE</a>'s variational inference.",
-        "formula": "E: P(k|xᵢ) = πₖN(xᵢ|μₖ,σₖ) / Σⱼ πⱼN(xᵢ|μⱼ,σⱼ) M: update μ,σ,π",
+        "formula": "E: P(k|xᵢ) = πₖN(xᵢ|μₖ,σₖ) / Σⱼ πⱼN(xᵢ|μⱼ,σⱼ) nbsp; M: update μ,σ,π",
         "module": "/src/demos/gmm-section4.js",
         "mount": "mountGmm"
       },
