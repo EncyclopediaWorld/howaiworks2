@@ -329,7 +329,7 @@ export const sectionContent = {
         "paper": "https://doi.org/10.1162/neco.1997.9.8.1735",
         "text": "Hochreiter & Schmidhuber's solution to vanishing gradients. Three gates (forget, input, output) control what to remember, add, and output from the cell state.",
         "lineage": "Solves <a href=\"/section/3#model-rnn\">RNN</a>'s vanishing gradient problem with gated memory; enables <a href=\"/section/6#model-seq2seq\">Seq2Seq</a> translation and <a href=\"/section/7#model-elmo\">ELMo</a> embeddings.",
-        "formula": "fₜ = σ(forget) iₜ = σ(input) oₜ = σ(output) cₜ = fₜ⊙cₜ₋₁ + iₜ⊙tanh(…)",
+        "formula": "fₜ = σ(forget) nbsp; iₜ = σ(input) nbsp; oₜ = σ(output) nbsp; cₜ = fₜ⊙cₜ₋₁ + iₜ⊙tanh(…)",
         "module": "/src/demos/lstm-section4.js",
         "mount": "mountLstm"
       },
