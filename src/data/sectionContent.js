@@ -317,7 +317,7 @@ export const sectionContent = {
         "paper": "https://doi.org/10.1007/BF00994018",
         "text": "Vapnik's maximum-margin classifier — find the hyperplane that separates classes with the widest possible margin. Support vectors define the boundary.",
         "lineage": "Extends <a href=\"/section/2#model-knn\">k-NN</a>'s distance-based idea with kernel tricks for non-linear boundaries; dominated ML before <a href=\"/section/6#model-alexnet\">AlexNet</a> proved deep learning superior.",
-        "formula": "maximize margin = 2/||w|| subject to yᵢ(w·xᵢ + b) ≥ 1",
+        "formula": "maximize margin = 2/||w|| nbsp; subject to yᵢ(w·xᵢ + b) ≥ 1",
         "module": "/src/demos/svm-section4.js",
         "mount": "mountSvm"
       },
