@@ -83,7 +83,7 @@ export const sectionContent = {
         "paper": "https://doi.org/10.1037/h0042519",
         "text": "Rosenblatt's first artificial neuron that could learn from data. Computes weighted sum of inputs; output 1 if above threshold, 0 otherwise.",
         "lineage": "Builds on <a href=\"/section/1#model-linreg\">Linear Regression</a> with a step activation; its linear-only limitation is fixed by <a href=\"/section/1#model-adaline\">Adaline</a> and later <a href=\"/section/3#model-backprop\">Backpropagation</a>.",
-        "formula": "y = step(w·x + b) update: w += η(target - y)·x",
+        "formula": "y = step(w·x + b) nbsp; update: w += η(target - y)·x",
         "module": "/src/demos/perceptron-section1.js",
         "mount": "mountPerceptron"
       },
