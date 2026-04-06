@@ -35,7 +35,7 @@ export const sectionContent = {
         "paper": "https://en.wikipedia.org/wiki/Bayes%27_theorem",
         "text": "Update your belief based on new evidence. Prior × likelihood → posterior. The core framework of probabilistic inference.",
         "lineage": "The foundation of probabilistic reasoning; directly enables <a href=\"/section/2#model-naivebayes\">Naive Bayes</a> classifiers and <a href=\"/section/4#model-gmm\">GMM+EM</a> clustering.",
-        "formula": "P(A|B) = P(B|A)·P(A) / P(B) posterior = likelihood × prior / evidence",
+        "formula": "P(A|B) = P(B|A)·P(A) / P(B) nbsp; posterior = likelihood × prior / evidence",
         "module": "/src/demos/bayes-section1.js",
         "mount": "mountBayes"
       },
