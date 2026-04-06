@@ -95,7 +95,7 @@ export const sectionContent = {
         "paper": "https://en.wikipedia.org/wiki/ADALINE",
         "text": "Widrow & Hoff's adaptive linear neuron — unlike the Perceptron, Adaline computes error <strong>before</strong> the activation function, enabling true gradient descent (LMS rule). The decision boundary glides smoothly into place!",
         "lineage": "Improves on <a href=\"/section/1#model-perceptron\">Perceptron</a> by using continuous gradient descent instead of discrete updates; the LMS rule directly inspires <a href=\"/section/3#model-backprop\">Backpropagation</a>.",
-        "formula": "z = w·x + b Δw = η(target − z)·x error on raw output, not after step()",
+        "formula": "z = w·x + b nbsp; Δw = η(target − z)·x nbsp; error on raw output, not after step()",
         "module": "/src/demos/adaline-section1.js",
         "mount": "mountAdaline"
       }
