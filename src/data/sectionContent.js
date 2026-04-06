@@ -47,7 +47,7 @@ export const sectionContent = {
         "paper": "https://en.wikipedia.org/wiki/Markov_chain",
         "text": "Memoryless state transitions — the next state depends only on the current state. Cornerstone of HMM, MCMC, and PageRank.",
         "lineage": "Inspires sequential modeling; its memoryless limitation motivates <a href=\"/section/3#model-rnn\">RNN</a> (which adds memory) and <a href=\"/section/3#model-boltzmann\">Boltzmann Machine</a> sampling.",
-        "formula": "P(Xₙ₊₁|Xₙ,Xₙ₋₁,...) = P(Xₙ₊₁|Xₙ) memoryless property",
+        "formula": "P(Xₙ₊₁|Xₙ,Xₙ₋₁,...) = P(Xₙ₊₁|Xₙ) nbsp; memoryless property",
         "module": "/src/demos/markov-section1.js",
         "mount": "mountMarkov"
       },
