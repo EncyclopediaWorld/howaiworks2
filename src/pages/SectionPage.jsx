@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import { sectionContent } from '../data/sectionContent'
+import DemoChat from '../components/DemoChat.jsx'
 
 const demoModules = import.meta.glob('/src/demos/**/*.js')
 const TOTAL_SECTIONS = Object.keys(sectionContent).length
@@ -193,6 +194,7 @@ export default function SectionPage() {
             </div>
             {model.formula && <div className="mc-formula" style={{ color: section.color }} dangerouslySetInnerHTML={{ __html: model.formula }} />}
             <div className="mc-demo" id={model.id} />
+            <DemoChat model={model} />
           </div>
         ))}
       </main>

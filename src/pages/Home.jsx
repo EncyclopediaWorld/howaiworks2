@@ -1,10 +1,45 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { sectionContent } from '../data/sectionContent'
+import { getApiKey, setApiKey, clearApiKey, getProvider, setProvider, PROVIDERS } from '../lib/apiKey.js'
 import { initParticles } from '../lib/shared'
 
 export default function Home() {
   const sections = Object.values(sectionContent)
+  const [showKeyModal,  setShowKeyModal]  = useState(false)
+  const [modalProvider, setModalProvider] = useState('openai')
+  const [keyDraft,      setKeyDraft]      = useState('')
+  const [keyExists,     setKeyExists]     = useState(false)
+
+  function openKeyModal() {
+    const p = getProvider()
+    setModalProvider(p)
+    setKeyDraft('')
+    setKeyExists(!!getApiKey(p))
+    setShowKeyModal(true)
+  }
+
+  function handleModalProvider(p) {
+    setModalProvider(p)
+    setKeyDraft('')
+    setKeyExists(!!getApiKey(p))
+  }
+
+  function saveKey(e) {
+    e?.preventDefault()
+    const k = keyDraft.trim()
+    if (!k) return
+    setApiKey(k, modalProvider)
+    setProvider(modalProvider)
+    setKeyDraft('')
+    setKeyExists(true)
+  }
+
+  function removeKey() {
+    clearApiKey(modalProvider)
+    setKeyExists(false)
+    setKeyDraft('')
+  }
 
   // Calculate statistics dynamically
   const totalModels = sections.reduce((sum, section) => sum + section.models.length, 0)
@@ -45,9 +80,72 @@ export default function Home() {
             <div className="stat"><div className="num">{yearSpan}</div><div className="lbl">Years</div></div>
             <div className="stat"><div className="num">{totalEras}</div><div className="lbl">Eras</div></div>
           </div>
+          <button
+            className="api-key-btn"
+            onClick={openKeyModal}
+            title="Manage your AI provider API keys"
+          >
+            🔑 API Keys
+          </button>
           <div className="scroll-cue" style={{ marginTop:'2.5rem' }}>↓ scroll to explore</div>
         </div>
       </section>
+
+      {showKeyModal && (
+        <div className="api-key-modal-overlay" onClick={e => { if (e.target === e.currentTarget) setShowKeyModal(false) }}>
+          <div className="api-key-modal">
+            <button className="api-key-modal-close" onClick={() => setShowKeyModal(false)}>✕</button>
+            <h3 className="api-key-modal-title">🔑 AI Provider & API Key</h3>
+            <p className="api-key-modal-hint">
+              Choose a provider and paste your API key. Keys are stored only in your browser
+              — never sent to our servers.
+            </p>
+            <div className="provider-selector">
+              {PROVIDERS.map(p => (
+                <button
+                  key={p.id}
+                  type="button"
+                  className={`provider-pill${modalProvider === p.id ? ' active' : ''}`}
+                  onClick={() => handleModalProvider(p.id)}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+            <div className="provider-model-hint">Model: {PROVIDERS.find(p => p.id === modalProvider)?.model}</div>
+            {keyExists ? (
+              <div className="api-key-modal-saved">
+                <span>✓ Key saved for {PROVIDERS.find(p => p.id === modalProvider)?.label}</span>
+                <button className="btn" type="button" onClick={removeKey}>Clear</button>
+              </div>
+            ) : (
+              <form className="api-key-modal-form" onSubmit={saveKey}>
+                <input
+                  type="password"
+                  autoComplete="off"
+                  spellCheck="false"
+                  placeholder={PROVIDERS.find(p => p.id === modalProvider)?.placeholder || '…'}
+                  value={keyDraft}
+                  onChange={e => setKeyDraft(e.target.value)}
+                  className="api-key-modal-input"
+                  autoFocus
+                />
+                <button type="submit" className="btn api-key-modal-btn">Save</button>
+              </form>
+            )}
+            <a
+              href={
+                modalProvider === 'openai'    ? 'https://platform.openai.com/api-keys' :
+                modalProvider === 'anthropic' ? 'https://console.anthropic.com/settings/keys' :
+                                               'https://aistudio.google.com/apikey'
+              }
+              target="_blank" rel="noreferrer" className="api-key-modal-link"
+            >
+              Get a {PROVIDERS.find(p => p.id === modalProvider)?.label} API key →
+            </a>
+          </div>
+        </div>
+      )}
 
       <nav className="toc">
         <h2>Choose an Era</h2>
