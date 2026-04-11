@@ -333,12 +333,12 @@ canvas{touch-action: none;}
 .api-key-btn {
   font-family: var(--mono); font-size: .65rem; font-weight: 500;
   padding: .32rem .85rem; border: 1px solid var(--border);
-  background: rgba(255,255,255,.03); color: var(--text3); border-radius: 20px;
+  background: rgba(78,205,196,.08); color: var(--a2); border-color: rgba(78,205,196,.45); border-radius: 20px;
   cursor: pointer; transition: all .25s var(--ease); letter-spacing: .04em;
   margin-top: 1.2rem; display: inline-flex; align-items: center; gap: .4rem;
   animation: fadeUp .8s .52s var(--ease) both;
 }
-.api-key-btn:hover { border-color: var(--a3); color: var(--a3); background: rgba(255,209,102,.05); }
+.api-key-btn:hover { border-color: var(--a2); color: #9cf2ec; background: rgba(78,205,196,.16); box-shadow: 0 0 18px rgba(78,205,196,.18); }
 
 /* ===== API KEY MODAL (Home) ===== */
 .api-key-modal-overlay {
