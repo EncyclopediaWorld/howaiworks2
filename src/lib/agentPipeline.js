@@ -116,7 +116,7 @@ ENVIRONMENT — already declared in scope, do NOT redeclare:
   canvas (750×300), ctx, W=750, H=300
   lerp(a,b,t)  clamp(v,lo,hi)  sigmoid(x)  rand(a,b)  randInt(a,b)  dist(x1,y1,x2,y2)  TAU
   addBtn(label, onClick)   ← appends a styled button below the canvas
-  showHint(text)           ← displays a hint line below the canvas
+  showHint(text)           ← displays a static one-time hint below the canvas (do NOT call inside event listeners or animation loops)
 
 CRITICAL — do NOT do any of the following (already handled by setup):
   • Do NOT set canvas.width or canvas.height — resetting them clears the canvas and breaks rendering
