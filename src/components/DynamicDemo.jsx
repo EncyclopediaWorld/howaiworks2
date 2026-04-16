@@ -51,11 +51,18 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
     this.closePath();
   };
 }
+
+// Auto-resize: report content height to parent whenever DOM changes
+function _reportHeight() {
+  window.parent.postMessage({ type: 'iframeHeight', height: document.body.scrollHeight }, '*');
+}
+new MutationObserver(_reportHeight).observe(document.body, { childList: true, subtree: true });
+_reportHeight();
 `
 
 const buildHtml = (code) => `<!DOCTYPE html>
 <html><head><meta charset="utf-8">
-<style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#06060c;}canvas{display:block;}</style>
+<style>*{margin:0;padding:0;box-sizing:border-box;}html,body{background:#06060c;overflow-x:hidden;overflow-y:hidden;}canvas{display:block;max-width:100%;}</style>
 </head><body>
 <canvas id="c"></canvas>
 <script>
@@ -78,6 +85,16 @@ export default function DynamicDemo({ code }) {
     console.log("AI 生成的代码：", code)
     ref.current.srcdoc = buildHtml(code)
   }, [code])
+
+  useEffect(() => {
+    function onMessage(e) {
+      if (e.data?.type === 'iframeHeight' && ref.current) {
+        ref.current.style.height = e.data.height + 'px'
+      }
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [])
 
   if (!code) return null
 
