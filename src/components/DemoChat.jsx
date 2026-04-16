@@ -4,10 +4,9 @@ import { runAgentPipeline } from '../lib/agentPipeline.js'
 import DynamicDemo from './DynamicDemo.jsx'
 
 const STAGE_MSG = {
-  analyzing: 'Analyzing your question…',
-  planning:  'Planning the visualization…',
-  generating:'Generating demo code…',
-  reviewing: 'Running safety check…',
+  analyzing:  'Analyzing your question…',
+  generating: 'Generating demo and explanation…',
+  reviewing:  'Running safety check…',
 }
 
 export default function DemoChat({ model }) {
@@ -19,6 +18,9 @@ export default function DemoChat({ model }) {
   const [keyDraft,     setKeyDraft]     = useState('')
   const [chatProvider, setChatProvider] = useState(() => getProvider())
 
+  // Extract filename from model.module e.g. "/src/demos/linearRegression-section1.js"
+  const demoFile = model?.module?.split('/').pop() ?? ''
+
   async function submit(e) {
     e?.preventDefault()
     const q = question.trim()
@@ -29,7 +31,13 @@ export default function DemoChat({ model }) {
     setResult(null)
     try {
       const res = await runAgentPipeline(
-        { demoName: model.name, demoText: model.text, demoFormula: model.formula, userQuestion: q },
+        {
+          demoName:    model.name,
+          demoText:    model.text,
+          demoFormula: model.formula,
+          demoFile,
+          userQuestion: q,
+        },
         setStage
       )
       setResult(res)
@@ -142,8 +150,7 @@ export default function DemoChat({ model }) {
 
       {result && (
         <div className="demo-chat-result">
-          <p className="demo-chat-explanation">{result.confusion}</p>
-          <p className="demo-chat-plan">{result.plan}</p>
+          <p className="demo-chat-explanation">{result.explanation}</p>
           <DynamicDemo code={result.code} />
           <div className="demo-chat-result-footer">
             <button className="btn" onClick={() => setResult(null)}>↺ Ask again</button>
