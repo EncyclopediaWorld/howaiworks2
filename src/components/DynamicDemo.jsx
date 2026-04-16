@@ -34,6 +34,23 @@ function showHint(text) {
   d.style.cssText = 'margin:6px 4px 0;color:#888;font:400 10px Courier New;';
   document.body.appendChild(d);
 }
+
+// roundRect polyfill for browsers that don't support it natively
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    this.beginPath();
+    this.moveTo(x+r, y);
+    this.lineTo(x+w-r, y);
+    this.quadraticCurveTo(x+w, y, x+w, y+r);
+    this.lineTo(x+w, y+h-r);
+    this.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    this.lineTo(x+r, y+h);
+    this.quadraticCurveTo(x, y+h, x, y+h-r);
+    this.lineTo(x, y+r);
+    this.quadraticCurveTo(x, y, x+r, y);
+    this.closePath();
+  };
+}
 `
 
 const buildHtml = (code) => `<!DOCTYPE html>
@@ -58,10 +75,8 @@ export default function DynamicDemo({ code }) {
 
   useEffect(() => {
     if (!ref.current || !code) return
-    const blob = new Blob([buildHtml(code)], { type: 'text/html' })
-    const url  = URL.createObjectURL(blob)
-    ref.current.src = url
-    return () => URL.revokeObjectURL(url)
+    console.log("AI 生成的代码：", code)
+    ref.current.srcdoc = buildHtml(code)
   }, [code])
 
   if (!code) return null

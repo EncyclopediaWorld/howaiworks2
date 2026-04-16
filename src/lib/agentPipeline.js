@@ -122,6 +122,7 @@ CRITICAL — do NOT do any of the following (already handled by setup):
   • Do NOT set canvas.width or canvas.height — resetting them clears the canvas and breaks rendering
   • Do NOT call document.getElementById or create a new canvas element
   • Do NOT redeclare canvas, ctx, W, or H with const/let/var
+  • All drawn points, lines, and shapes MUST stay within canvas bounds (0 ≤ x ≤ W, 0 ≤ y ≤ H) — use clamp(value, 0, W) or clamp(value, 0, H) to enforce this
 
 VISUAL STYLE (match the reference demos exactly):
   • Background: clear each frame with ctx.fillStyle='#06060c'; ctx.fillRect(0,0,W,H)
