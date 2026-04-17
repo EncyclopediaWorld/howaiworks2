@@ -1,13 +1,8 @@
 import { useState } from 'react'
 import { getApiKey, setApiKey, getProvider, setProvider, PROVIDERS } from '../lib/apiKey.js'
-import { runAgentPipeline } from '../lib/agentPipeline.js'
+import { runPipeline } from '../lib/agentPipeline.js'
+import { getDemoSource } from '../lib/demoSources.js'
 import DynamicDemo from './DynamicDemo.jsx'
-
-const STAGE_MSG = {
-  analyzing:  'Analyzing your question…',
-  generating: 'Generating demo and explanation…',
-  reviewing:  'Running safety check…',
-}
 
 export default function DemoChat({ model }) {
   const [question,     setQuestion]     = useState('')
@@ -18,8 +13,11 @@ export default function DemoChat({ model }) {
   const [keyDraft,     setKeyDraft]     = useState('')
   const [chatProvider, setChatProvider] = useState(() => getProvider())
 
-  // Extract filename from model.module e.g. "/src/demos/linearRegression-section1.js"
-  const demoFile = model?.module?.split('/').pop() ?? ''
+  function getCurrentDemoCode() {
+    const modulePath = model?.module || ''
+    const filename = modulePath.split('/').pop()
+    return getDemoSource(filename) || ''
+  }
 
   async function submit(e) {
     e?.preventDefault()
@@ -30,21 +28,16 @@ export default function DemoChat({ model }) {
     setError(null)
     setResult(null)
     try {
-      const res = await runAgentPipeline(
-        {
-          demoName:    model.name,
-          demoText:    model.text,
-          demoFormula: model.formula,
-          demoFile,
-          userQuestion: q,
-        },
-        setStage
+      const { explanation, code } = await runPipeline(
+        getProvider(),
+        getApiKey(),
+        q,
+        getCurrentDemoCode(),
+        setStage,
       )
-      setResult(res)
-      setQuestion('')
+      setResult({ explanation, code })
     } catch (err) {
-      if (err.message === 'NO_API_KEY') setNeedKey(true)
-      else setError(err.message)
+      setError(err.message || String(err))
     } finally {
       setStage(null)
     }
@@ -142,7 +135,7 @@ export default function DemoChat({ model }) {
       {stage && (
         <div className="demo-chat-progress">
           <span className="demo-chat-spinner" />
-          {STAGE_MSG[stage]}
+          {stage}
         </div>
       )}
 

@@ -1,21 +1,40 @@
-import { getProvider, getApiKey } from './apiKey.js'
-import { getDemoSource, getRandomDemoSources } from './demoSources.js'
+import knnCode         from '../demos/knn-section2.js?raw'
+import backpropCode    from '../demos/backpropagation-section3.js?raw'
+import transformerCode from '../demos/transformer-section7.js?raw'
+import pcaCode         from '../demos/pca-section4.js?raw'
+import { SPEC as sharedSpec } from './sharedSpec.js'
+import { SHARED } from './sharedCode.js'
 
-// ── LLM Dispatchers ───────────────────────────────────────────────────────────
+// ─── LLM providers ────────────────────────────────────────────────────────────
 
-async function callOpenAI(messages, maxTokens, apiKey) {
+const MODELS = {
+  openai:    'gpt-4o-mini',
+  anthropic: 'claude-haiku-4-5-20251001',
+  gemini:    'gemini-2.0-flash',
+}
+
+export async function callLLM(provider, apiKey, messages) {
+  if (provider === 'openai')    return _openai(apiKey, messages)
+  if (provider === 'anthropic') return _anthropic(apiKey, messages)
+  if (provider === 'gemini')    return _gemini(apiKey, messages)
+  throw new Error(`Unknown provider: ${provider}`)
+}
+
+async function _openai(apiKey, messages) {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-    body: JSON.stringify({ model: 'gpt-4o-mini', messages, temperature: 0.5, max_tokens: maxTokens }),
+    body: JSON.stringify({ model: MODELS.openai, messages }),
   })
-  if (!res.ok) { const b = await res.json().catch(() => ({})); throw new Error(b?.error?.message || `OpenAI ${res.status}`) }
-  return (await res.json()).choices[0].message.content.trim()
+  if (!res.ok) throw new Error(`OpenAI ${res.status}: ${await res.text()}`)
+  return (await res.json()).choices[0].message.content
 }
 
-async function callAnthropic(messages, maxTokens, apiKey) {
-  const system = messages.find(m => m.role === 'system')?.content || ''
-  const msgs   = messages.filter(m => m.role !== 'system')
+async function _anthropic(apiKey, messages) {
+  const system   = messages.find(m => m.role === 'system')?.content
+  const filtered = messages.filter(m => m.role !== 'system')
+  const body     = { model: MODELS.anthropic, max_tokens: 8192, messages: filtered }
+  if (system) body.system = system
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -24,211 +43,285 @@ async function callAnthropic(messages, maxTokens, apiKey) {
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true',
     },
-    body: JSON.stringify({ model: 'claude-3-5-haiku-20241022', max_tokens: maxTokens, system, messages: msgs }),
+    body: JSON.stringify(body),
   })
-  if (!res.ok) { const b = await res.json().catch(() => ({})); throw new Error(b?.error?.message || `Anthropic ${res.status}`) }
-  return (await res.json()).content[0].text.trim()
+  if (!res.ok) throw new Error(`Anthropic ${res.status}: ${await res.text()}`)
+  return (await res.json()).content[0].text
 }
 
-async function callGemini(messages, maxTokens, apiKey) {
-  const systemText = messages.find(m => m.role === 'system')?.content || ''
-  const contents   = messages
-    .filter(m => m.role !== 'system')
-    .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }))
-  const body = {
-    contents,
-    generationConfig: { maxOutputTokens: maxTokens, temperature: 0.5 },
-    ...(systemText ? { system_instruction: { parts: [{ text: systemText }] } } : {}),
-  }
+async function _gemini(apiKey, messages) {
+  const system   = messages.find(m => m.role === 'system')?.content
+  const filtered = messages.filter(m => m.role !== 'system')
+  const contents = filtered.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }))
+  const body = { contents }
+  if (system) body.systemInstruction = { parts: [{ text: system }] }
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODELS.gemini}:generateContent?key=${apiKey}`,
     { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
   )
-  if (!res.ok) { const b = await res.json().catch(() => ({})); throw new Error(b?.error?.message || `Gemini ${res.status}`) }
-  return (await res.json()).candidates[0].content.parts[0].text.trim()
+  if (!res.ok) throw new Error(`Gemini ${res.status}: ${await res.text()}`)
+  return (await res.json()).candidates[0].content.parts[0].text
 }
 
-async function callLLM(messages, maxTokens = 300) {
-  const provider = getProvider()
-  const apiKey   = getApiKey(provider)
-  if (!apiKey) throw new Error('NO_API_KEY')
-  if (provider === 'openai')    return callOpenAI(messages, maxTokens, apiKey)
-  if (provider === 'anthropic') return callAnthropic(messages, maxTokens, apiKey)
-  if (provider === 'gemini')    return callGemini(messages, maxTokens, apiKey)
-  throw new Error(`Unknown provider: ${provider}`)
+// ─── Agent 1B — Demo design spec ──────────────────────────────────────────────
+
+const AGENT1B_SYSTEM = `\
+You are a demo designer for "How AI Works" — an interactive AI education website.
+
+Your job: given a user's question about an AI concept, design an interactive canvas demo that answers it visually.
+
+Output ONLY a single valid JSON object. Do NOT wrap it in markdown fences. No explanation, no extra text.
+
+Here is the JSON schema you MUST follow (do NOT output this block):
+
+\`\`\`json
+{
+  "concept":  string,   // core idea to visualize — one clear sentence
+  "hint":     string,   // exact text passed to addHint() — actionable ("Click…", "Watch…", "Drag…")
+
+  "visual": {
+    "main":   string,   // what to draw on canvas and how to divide the space spatially
+    "panels": [         // 0–3 info panels drawn ON the canvas (not DOM)
+      {
+        "zone":    "top-left" | "top-right" | "bottom-bar",
+        "content": string   // what data or text to show in this panel
+      }
+    ]
+  },
+
+  "colorMap": {         // semantic name → hex from the palette below
+    "<element>": "<hex>"
+  },
+
+  "interactions": {
+    "animation": "none" | "rAF" | "interval-60" | "interval-120" | "interval-250",
+    "shimTouch": boolean,
+    "mouse":   array,   // zero or more of: "hover" | "click-add" | "context-menu" | "click-select" | "drag"
+    "buttons": [
+      {
+        "label":    string,
+        "type":     "step" | "auto" | "reset" | "fast",
+        "interval": number,   // only for type "auto" — milliseconds
+        "count":    number    // only for type "fast" — iterations per click
+      }
+    ],
+    "sliders": [
+      {
+        "label":   string,
+        "varName": string,   // JS variable name updated by this slider
+        "min":     number,
+        "max":     number,
+        "default": number
+      }
+    ]
+  }
 }
-
-// ── stripDemoCode ─────────────────────────────────────────────────────────────
-// Removes ESM boilerplate from fixed demo files so agents only see pure logic.
-
-export function stripDemoCode(raw) {
-  // Remove all import lines
-  let code = raw.replace(/^import\s+.*$/gm, '')
-  // Extract body inside "export function mountXxx(...) { ... }"
-  const match = code.match(/export\s+function\s+\w+[^{]*\{([\s\S]*)\}$/)
-  if (match) code = match[1]
-  // Remove trailing cleanup: "return () => { ... }"
-  code = code.replace(/\s*return\s*\(\s*\)\s*=>\s*\{[\s\S]*?\}\s*;?\s*$/, '')
-  return code.trim()
-}
-
-// ── Agent 1: Intent Analyzer ──────────────────────────────────────────────────
-// Reads the user's question + the stripped corresponding demo code.
-// Outputs a single sentence describing what the new demo should highlight.
-
-async function analyzeIntent(demoName, strippedDemoCode, userQuestion) {
-  return callLLM([
-    {
-      role: 'system',
-      content: `You are an AI education expert. You will be given an interactive canvas demo's source code and a user's question about it.
-Identify in ONE concise English sentence what the new demo should emphasize or do to best address the user's question.
-If the user asks for a new/different version, say what variation would be most instructive.`,
-    },
-    {
-      role: 'user',
-      content: `Demo name: "${demoName}"
-
-Demo source code:
-\`\`\`js
-${strippedDemoCode}
 \`\`\`
 
-User question: ${userQuestion}`,
-    },
-  ], 150)
-}
+═══ STRICT RULES ═══
 
-// ── Agent 2: Code Generator ───────────────────────────────────────────────────
-// Reads intent from Agent 1 + 4 stripped reference demos.
-// Generates self-contained canvas JS for the iframe sandbox.
+- Every demo MUST have at least a "reset" button
+- If animation is "interval-*", add an "auto" button with matching interval
+- "click-add" and "context-menu" always appear together (left-click = class 0, right-click = class 1)
+- shimTouch must be true if mouse array is non-empty
+- Only include panel zones that genuinely add value — do not force all three
+- buttons.type and mouse values must be exactly from the enums above — no custom strings
+- colorMap values must be hex codes from this palette only:
+  #ff6b6b #4ecdc4 #ffd166 #a78bfa #f472b6 #38bdf8 #fb923c #34d399
+  #e4e2df #7d7a8c #4a475a #1a1a2e #06060c
 
-async function generateCode(demoName, intent, strippedReferenceCodes) {
-  const refBlock = strippedReferenceCodes
-    .map((code, i) => `// Reference demo ${i + 1}:\n${code}`)
-    .join('\n\n')
+═══ DESIGN PRINCIPLES ═══
 
-  return callLLM([
-    {
-      role: 'system',
-      content: `You are an expert JavaScript canvas programmer creating educational AI visualizations.
+- The demo must directly answer the user's question with a visual intuition
+- Study the current demo's interaction style — the new demo should feel consistent
+- Prefer interactive over static: give the user something to manipulate or explore
+- Canvas logical size is 750×340 — plan your spatial layout explicitly in visual.main
+- Info panels are drawn on canvas with ctx.roundRect, never as DOM elements
+- The hint text should tell the user exactly what to do, not describe the algorithm
 
-ENVIRONMENT — already declared in scope, do NOT redeclare:
-  canvas (750×300), ctx, W=750, H=300
-  lerp(a,b,t)  clamp(v,lo,hi)  sigmoid(x)  rand(a,b)  randInt(a,b)  dist(x1,y1,x2,y2)  TAU
-  addBtn(label, onClick)   ← appends a styled button below the canvas
-  showHint(text)           ← displays a static one-time hint below the canvas (do NOT call inside event listeners or animation loops)
+═══ SHARED RUNTIME SPEC ═══
 
-CRITICAL — do NOT do any of the following (already handled by setup):
-  • Do NOT set canvas.width or canvas.height — resetting them clears the canvas and breaks rendering
-  • Do NOT call document.getElementById or create a new canvas element
-  • Do NOT redeclare canvas, ctx, W, or H with const/let/var
-  • All drawn points, lines, and shapes MUST stay within canvas bounds (0 ≤ x ≤ W, 0 ≤ y ≤ H) — use clamp(value, 0, W) or clamp(value, 0, H) to enforce this
+${sharedSpec}
 
-VISUAL STYLE (match the reference demos exactly):
-  • Background: clear each frame with ctx.fillStyle='#06060c'; ctx.fillRect(0,0,W,H)
-  • Palette: #ff6b6b  #4ecdc4  #ffd166  #a78bfa  #f472b6  #38bdf8
-  • Labels: ctx.fillStyle='#e4e2df'; ctx.font='600 11px Courier New'
-  • Glow: ctx.shadowBlur=8; ctx.shadowColor=<color>  then reset ctx.shadowBlur=0
+═══ REFERENCE DEMOS ═══
 
-REQUIRED ELEMENTS (every demo must have all three):
-  1. At least one button via addBtn() — e.g. Reset, Randomize
-  2. Mouse interaction on the canvas (mousemove or click)
-  3. A semi-transparent info panel showing relevant math/stats — use ctx.fillStyle with rgba and ctx.roundRect
+The following four demos show the full range of interaction patterns available.
+Study them to understand what's possible and how interactions are implemented.
 
-OUTPUT: Return ONLY runnable JavaScript. No markdown fences. No import/export. No wrapping function. Code runs directly.`,
-    },
-    {
-      role: 'user',
-      content: `Concept: "${demoName}"
-Goal: ${intent}
+--- knn-section2.js (hover + click-add + context-menu + slider) ---
+${knnCode}
 
-Study these reference demos carefully for code style and quality, then write a new demo:
+--- backpropagation-section3.js (step + auto-train + reset) ---
+${backpropCode}
 
-${refBlock}
+--- transformer-section7.js (click-select) ---
+${transformerCode}
 
-Now generate the new demo code:`,
-    },
-  ], 2200)
-}
+--- pca-section4.js (drag) ---
+${pcaCode}
+`
 
-// ── Agent 3: Explanation Writer ───────────────────────────────────────────────
-// Reads user question + demo text/formula only (runs in parallel with Agent 2).
-// Replies in the same language as the user's question.
-
-async function generateExplanation(demoName, demoText, demoFormula, userQuestion) {
-  return callLLM([
-    {
-      role: 'system',
-      content: `You are a friendly AI tutor. Answer the user's question about the given concept clearly and concisely (2-4 sentences).
-Reply in the SAME language the user used. Do not use markdown. Do not mention code.`,
-    },
-    {
-      role: 'user',
-      content: `Concept: "${demoName}"
-Description: ${demoText}${demoFormula ? `\nFormula: ${demoFormula}` : ''}
-
-User question: ${userQuestion}`,
-    },
-  ], 200)
-}
-
-// ── stripMarkdownFences ───────────────────────────────────────────────────────
-// LLMs sometimes wrap output in ```js ... ``` despite instructions.
-// Strip any markdown code fences before injecting into the iframe.
-
-function stripMarkdownFences(code) {
-  return code
-    .replace(/^```(?:javascript|js)?\s*\n?/i, '')
-    .replace(/\n?```\s*$/,  '')
-    .trim()
-}
-
-// ── Agent 4: Safety Reviewer ──────────────────────────────────────────────────
-// Strips dangerous browser APIs before the code runs in the iframe sandbox.
-
-async function reviewSafety(code) {
-  return callLLM([
-    {
-      role: 'system',
-      content: `Security reviewer. Remove any calls to: fetch, XMLHttpRequest, WebSocket, eval, Function(), document.cookie, localStorage, sessionStorage, window.location, window.open, import(), require(), Worker, SharedArrayBuffer, Atomics. Make NO other changes. Return ONLY the cleaned code — zero explanation.`,
-    },
-    {
-      role: 'user',
-      content: code,
-    },
-  ], 2400)
-}
-
-// ── Public API ────────────────────────────────────────────────────────────────
-
-export async function runAgentPipeline(
-  { demoName, demoText, demoFormula, demoFile, userQuestion },
-  onStage
-) {
-  // Load and strip the corresponding demo + 3 random reference demos
-  const correspondingRaw = getDemoSource(demoFile)
-  const randomRaws       = getRandomDemoSources(demoFile)
-
-  const strippedMain = correspondingRaw ? stripDemoCode(correspondingRaw) : ''
-  const strippedRefs = [
-    ...(correspondingRaw ? [strippedMain] : []),
-    ...randomRaws.map(stripDemoCode),
-  ]
-
-  // Agent 1 — analyze intent
-  onStage?.('analyzing')
-  const intent = await analyzeIntent(demoName, strippedMain, userQuestion)
-
-  // Agent 2 + Agent 3 — run in parallel
-  onStage?.('generating')
-  const [rawCode, explanation] = await Promise.all([
-    generateCode(demoName, intent, strippedRefs),
-    generateExplanation(demoName, demoText, demoFormula, userQuestion),
+async function agent1B(provider, apiKey, question, currentDemoCode) {
+  const raw = await callLLM(provider, apiKey, [
+    { role: 'system', content: AGENT1B_SYSTEM },
+    { role: 'user',   content: `CURRENT DEMO SOURCE:\n${currentDemoCode}\n\nUSER QUESTION:\n${question}` },
   ])
+  const match = raw.match(/\{[\s\S]*\}/)
+  if (!match) throw new Error('Agent 1B did not return JSON')
+  return JSON.parse(match[0])
+}
 
-  // Safety review on generated code
-  onStage?.('reviewing')
-  const safeCode = await reviewSafety(stripMarkdownFences(rawCode))
+// ─── Agent 1A — Text explanation ──────────────────────────────────────────────
 
-  return { explanation, code: stripMarkdownFences(safeCode) }
+const AGENT1A_SYSTEM = `\
+You are an AI tutor for "How AI Works" — an interactive education website.
+
+Given a user's question about an AI concept demo, write a clear and direct explanation that answers it.
+
+Rules:
+- 2–4 sentences maximum
+- Plain text only — no markdown, no bullet points, no headers
+- Focus on intuition, not formulas
+- Match the language of the user's question (if they write in Chinese, respond in Chinese)
+`
+
+async function agent1A(provider, apiKey, question, currentDemoCode) {
+  return callLLM(provider, apiKey, [
+    { role: 'system', content: AGENT1A_SYSTEM },
+    { role: 'user',   content: `DEMO CONTEXT:\n${currentDemoCode}\n\nUSER QUESTION:\n${question}` },
+  ])
+}
+
+// ─── Agent 2 — Code generation ────────────────────────────────────────────────
+
+const AGENT2_SYSTEM = `\
+You are a canvas demo programmer for "How AI Works" — an interactive AI education website.
+
+Your job: given a JSON design spec, write the JavaScript code for an interactive canvas demo.
+
+Output ONLY valid JavaScript code. No HTML, no imports, no exports, no markdown fences, no explanation.
+
+The code runs inside an iframe. The following runtime code is already executed before yours:
+
+\`\`\`js
+${SHARED}
+\`\`\`
+
+All globals defined above (canvas, ctx, W, H, getPos, addControls, addBtn, addHint,
+trackPointer, shimPointerToMouse, lerp, clamp, sigmoid, rand, randInt, dist, TAU) are
+available directly. CSS classes .btn, .btn.active, .demo-controls, .demo-hint,
+and input[type=range] are pre-styled.
+
+═══ SHARED RUNTIME SPEC ═══
+
+${sharedSpec}
+
+═══ HOW TO MAP THE JSON SPEC TO CODE ═══
+
+1. STATE & INIT
+   - Declare all state variables at the top
+   - Write a reset() function that reinitialises everything to its starting values
+
+2. DRAW FUNCTION
+   - Always start with: ctx.clearRect(0, 0, W, H)
+   - Draw the main visualization described in spec.visual.main
+   - Draw info panels described in spec.visual.panels using ctx.roundRect on canvas
+   - Use spec.colorMap for element colors — keys are element names, values are hex colors
+
+3. ANIMATION — map spec.interactions.animation:
+   "none"         → no loop, redraw only on events
+   "rAF"          → requestAnimationFrame(function loop() { update(); draw(); requestAnimationFrame(loop); })
+   "interval-60"  → driven by the Auto button's setInterval(..., 60)
+   "interval-120" → driven by the Auto button's setInterval(..., 120)
+   "interval-250" → driven by the Auto button's setInterval(..., 250)
+
+4. CONTROLS — always call addControls() first, then buttons in spec order:
+   type "step"  → addBtn(label, () => { step(); draw(); })
+   type "auto"  → (see toggle pattern below)
+   type "reset" → addBtn(label, () => { if(autoTmr){clearInterval(autoTmr);autoTmr=null;autoBtn.classList.remove('active')} reset(); draw(); })
+   type "fast"  → addBtn(label, () => { for(let i=0;i<count;i++) step(); draw(); })
+
+   Auto toggle pattern:
+   let autoTmr = null;
+   const autoBtn = addBtn(label, () => {
+     if (autoTmr) { clearInterval(autoTmr); autoTmr = null; autoBtn.classList.remove('active'); }
+     else { autoTmr = setInterval(() => { step(); draw(); }, interval); autoBtn.classList.add('active'); }
+   });
+
+5. SLIDERS — for each entry in spec.interactions.sliders:
+   const lbl = document.createElement('label'); lbl.textContent = label;
+   const sl = document.createElement('input'); sl.type='range';
+   sl.min=min; sl.max=max; sl.value=default;
+   sl.oninput = e => { varName = +e.target.value; draw(); };
+   const ctrl = document.querySelector('.demo-controls');
+   ctrl.appendChild(lbl); ctrl.appendChild(sl);
+
+6. MOUSE EVENTS — map spec.interactions.mouse values:
+   "hover"          → canvas.onmousemove / canvas.onmouseleave using getPos(e)
+   "click-add"      → canvas.onclick using getPos(e) — adds class-0 point
+   "context-menu"   → canvas.oncontextmenu using getPos(e) — adds class-1 point
+   "click-select"   → canvas.onclick using getPos(e) — hit-test canvas elements
+   "drag"           → canvas.onmousedown / onmousemove / onmouseup / onmouseleave
+
+   If spec.interactions.shimTouch is true → call shimPointerToMouse(canvas) before setting mouse handlers
+
+7. HINT — call addHint(spec.hint) last, after all controls
+
+═══ CODE QUALITY RULES ═══
+
+- Translate spec.colorMap into a const object at the top of your code: e.g. const COLORS = { background: '#06060c', node: '#4ecdc4' } — never reference "colorMap" as a variable
+- Write clean, readable code — meaningful variable names, logical structure
+- All canvas text must use "Fira Code" font and colors from the palette in sharedSpec
+- Info panels drawn on canvas: rgba(6,6,12,0.9) background, roundRect with radius 8
+- Never use DOM elements for info overlays — everything visual goes on the canvas
+- All mouse coordinate calculations must use getPos(e) — never manually compute clientX offsets
+- The demo must be self-contained: no fetch, no external scripts, no localStorage
+- Do NOT mention the JSON spec or its field names in comments or code — just implement it
+- Do NOT create placeholder functions or unused variables — only implement what the spec requires
+- Do NOT use console.log or any debugging output
+
+═══ REFERENCE DEMOS ═══
+
+Study these four complete demos to match code style, variable naming, draw function structure, and state organisation.
+
+--- knn-section2.js ---
+${knnCode}
+
+--- backpropagation-section3.js ---
+${backpropCode}
+
+--- transformer-section7.js ---
+${transformerCode}
+
+--- pca-section4.js ---
+${pcaCode}
+`
+
+async function agent2(provider, apiKey, spec) {
+  const raw = await callLLM(provider, apiKey, [
+    { role: 'system', content: AGENT2_SYSTEM },
+    { role: 'user',   content: `DESIGN SPEC:\n${JSON.stringify(spec, null, 2)}` },
+  ])
+  return raw.replace(/^```(?:javascript|js)?\s*/i, '').replace(/\s*```$/, '').trim()
+}
+
+// ─── Pipeline ─────────────────────────────────────────────────────────────────
+
+export async function runPipeline(provider, apiKey, question, currentDemoCode, onStage) {
+  onStage('理解问题…')
+  const [explanation, spec] = await Promise.all([
+    agent1A(provider, apiKey, question, currentDemoCode),
+    agent1B(provider, apiKey, question, currentDemoCode),
+  ])
+  console.log('[agent1A] explanation:', explanation)
+  console.log('[agent1B] spec:', spec)
+
+  onStage('生成代码…')
+  const code = await agent2(provider, apiKey, spec)
+  console.log('[agent2] code length:', code?.length, '| first 200 chars:', code?.slice(0, 200))
+
+  return { explanation, code }
 }

@@ -11,31 +11,6 @@ for (const [path, src] of Object.entries(rawModules)) {
   sourceMap[filename] = src
 }
 
-const allFilenames = Object.keys(sourceMap)
-
-/**
- * Returns the raw source string for a given demo filename.
- * @param {string} filename  e.g. "linearRegression-section1.js"
- */
 export function getDemoSource(filename) {
   return sourceMap[filename] ?? null
-}
-
-/**
- * Returns 3 raw source strings picked at random, excluding the given filename.
- * @param {string} excludeFilename  The demo to exclude (the current one)
- * @returns {string[]}  Array of 3 raw source strings
- */
-export function getRandomDemoSources(excludeFilename) {
-  const pool = allFilenames.filter(f => f !== excludeFilename)
-  const picked = []
-  const used = new Set()
-  while (picked.length < 3 && used.size < pool.length) {
-    const idx = Math.floor(Math.random() * pool.length)
-    if (!used.has(idx)) {
-      used.add(idx)
-      picked.push(sourceMap[pool[idx]])
-    }
-  }
-  return picked
 }
