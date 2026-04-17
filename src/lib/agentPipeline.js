@@ -141,7 +141,7 @@ Here is the JSON schema you MUST follow (do NOT output this block):
 - Prefer interactive over static: give the user something to manipulate or explore
 - Canvas logical size is 750×340 — plan your spatial layout explicitly in visual.main
 - Info panels are drawn on canvas with ctx.roundRect, never as DOM elements
-- The hint text should tell the user exactly what to do, not describe the algorithm
+- The hint text MUST tell the user exactly how to interact — use specific actions like "Left-click to add red points, right-click to add blue points", "Drag the arrow to rotate PC1", "Click Step to run one iteration" — never describe the algorithm
 
 ═══ SHARED RUNTIME SPEC ═══
 
@@ -270,7 +270,7 @@ ${sharedSpec}
 
    If spec.interactions.shimTouch is true → call shimPointerToMouse(canvas) before setting mouse handlers
 
-7. HINT — call addHint(spec.hint) last, after all controls
+7. HINT — call addHint(spec.hint) AFTER all controls and buttons. This is required — never skip it.
 
 ═══ CODE QUALITY RULES ═══
 
