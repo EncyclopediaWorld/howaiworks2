@@ -132,11 +132,12 @@ Here is the JSON schema you MUST follow (do NOT output this block):
 - colorMap values must be hex codes from this palette only:
   #ff6b6b #4ecdc4 #ffd166 #a78bfa #f472b6 #38bdf8 #fb923c #34d399
   #e4e2df #7d7a8c #4a475a #1a1a2e #06060c
+- colorMap keys must be camelCase identifiers only — no hyphens, no spaces (e.g. "panelBg" not "panel-bg")
 
 ═══ DESIGN PRINCIPLES ═══
 
 - The demo must directly answer the user's question with a visual intuition
-- Study the current demo's interaction style — the new demo should feel consistent
+- Study the current demo source carefully — reuse its visual elements (color choices, panel layout, data structures) and interaction patterns where appropriate so the new demo feels like a natural extension
 - Prefer interactive over static: give the user something to manipulate or explore
 - Canvas logical size is 750×340 — plan your spatial layout explicitly in visual.main
 - Info panels are drawn on canvas with ctx.roundRect, never as DOM elements
@@ -186,6 +187,7 @@ Rules:
 - Plain text only — no markdown, no bullet points, no headers
 - Focus on intuition, not formulas
 - Match the language of the user's question (if they write in Chinese, respond in Chinese)
+- If the user's input is a vague instruction rather than a specific question (e.g. "give me a new one", "show me something different", "再来一个"), write a clear explanation of the core concept shown in the current demo instead of asking for clarification
 `
 
 async function agent1A(provider, apiKey, question, currentDemoCode) {
@@ -300,10 +302,10 @@ ${transformerCode}
 ${pcaCode}
 `
 
-async function agent2(provider, apiKey, spec) {
+async function agent2(provider, apiKey, spec, currentDemoCode) {
   const raw = await callLLM(provider, apiKey, [
     { role: 'system', content: AGENT2_SYSTEM },
-    { role: 'user',   content: `DESIGN SPEC:\n${JSON.stringify(spec, null, 2)}` },
+    { role: 'user',   content: `CURRENT DEMO (style reference only — match its visual style and code patterns, but implement the spec below, do not copy its logic):\n${currentDemoCode}\n\nDESIGN SPEC:\n${JSON.stringify(spec, null, 2)}` },
   ])
   return raw.replace(/^```(?:javascript|js)?\s*/i, '').replace(/\s*```$/, '').trim()
 }
@@ -311,7 +313,7 @@ async function agent2(provider, apiKey, spec) {
 // ─── Pipeline ─────────────────────────────────────────────────────────────────
 
 export async function runPipeline(provider, apiKey, question, currentDemoCode, onStage) {
-  onStage('理解问题…')
+  onStage('Analyzing…')
   const [explanation, spec] = await Promise.all([
     agent1A(provider, apiKey, question, currentDemoCode),
     agent1B(provider, apiKey, question, currentDemoCode),
@@ -319,8 +321,8 @@ export async function runPipeline(provider, apiKey, question, currentDemoCode, o
   console.log('[agent1A] explanation:', explanation)
   console.log('[agent1B] spec:', spec)
 
-  onStage('生成代码…')
-  const code = await agent2(provider, apiKey, spec)
+  onStage('Generating code…')
+  const code = await agent2(provider, apiKey, spec, currentDemoCode)
   console.log('[agent2] code length:', code?.length, '| first 200 chars:', code?.slice(0, 200))
 
   return { explanation, code }

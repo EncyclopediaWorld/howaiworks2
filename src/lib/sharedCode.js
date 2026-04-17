@@ -12,8 +12,8 @@ export const SHARED_CSS = `
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: var(--mono); }
-canvas { display: block; width: 100%; height: auto; cursor: crosshair; touch-action: none; }
+body { background: var(--bg); color: var(--text); font-family: var(--mono); overflow: hidden; }
+canvas { display: block; width: 100%; max-width: 750px; aspect-ratio: 750 / 340; cursor: crosshair; touch-action: none; }
 .demo-controls {
   padding: .65rem 1rem; display: flex; gap: .5rem; flex-wrap: wrap;
   align-items: center; border-top: 1px solid var(--border); background: var(--bg3);
