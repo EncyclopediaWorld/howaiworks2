@@ -199,7 +199,7 @@ async function agent1A(provider, apiKey, question, currentDemoCode) {
 
 // ─── Agent 2 — Code generation ────────────────────────────────────────────────
 
-const AGENT2_SYSTEM = `\
+function buildAgent2System(currentDemoCode) { return `\
 You are a canvas demo programmer for "How AI Works" — an interactive AI education website.
 
 Your job: given a JSON design spec, write the JavaScript code for an interactive canvas demo.
@@ -300,12 +300,15 @@ ${transformerCode}
 
 --- pca-section4.js ---
 ${pcaCode}
-`
+
+--- current-demo.js (style reference — match its visual style and code patterns) ---
+${currentDemoCode}
+` }
 
 async function agent2(provider, apiKey, spec, currentDemoCode) {
   const raw = await callLLM(provider, apiKey, [
-    { role: 'system', content: AGENT2_SYSTEM },
-    { role: 'user',   content: `CURRENT DEMO (style reference only — match its visual style and code patterns, but implement the spec below, do not copy its logic):\n${currentDemoCode}\n\nDESIGN SPEC:\n${JSON.stringify(spec, null, 2)}` },
+    { role: 'system', content: buildAgent2System(currentDemoCode) },
+    { role: 'user',   content: `DESIGN SPEC:\n${JSON.stringify(spec, null, 2)}` },
   ])
   return raw.replace(/^```(?:javascript|js)?\s*/i, '').replace(/\s*```$/, '').trim()
 }
@@ -318,12 +321,9 @@ export async function runPipeline(provider, apiKey, question, currentDemoCode, o
     agent1A(provider, apiKey, question, currentDemoCode),
     agent1B(provider, apiKey, question, currentDemoCode),
   ])
-  console.log('[agent1A] explanation:', explanation)
-  console.log('[agent1B] spec:', spec)
 
   onStage('Generating code…')
   const code = await agent2(provider, apiKey, spec, currentDemoCode)
-  console.log('[agent2] code length:', code?.length, '| first 200 chars:', code?.slice(0, 200))
 
   return { explanation, code }
 }
