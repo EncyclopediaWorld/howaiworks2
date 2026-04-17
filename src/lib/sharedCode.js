@@ -148,7 +148,7 @@ if(!CanvasRenderingContext2D.prototype.roundRect){
 
 // Auto-resize: report content height to parent after layout settles
 function _reportHeight(){
-  setTimeout(()=>{const h=document.body.scrollHeight;if(h>0)window.parent.postMessage({type:'iframeHeight',height:h},'*');},0);
+  requestAnimationFrame(()=>{let h=0;for(const el of document.body.children)h+=el.getBoundingClientRect().height;if(h>0)window.parent.postMessage({type:'iframeHeight',height:h},'*');});
 }
 new MutationObserver(_reportHeight).observe(document.body,{childList:true,subtree:true});
 window.addEventListener('load',_reportHeight);

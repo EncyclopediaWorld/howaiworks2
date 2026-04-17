@@ -284,6 +284,10 @@ ${sharedSpec}
 - Do NOT mention the JSON spec or its field names in comments or code — just implement it
 - Do NOT create placeholder functions or unused variables — only implement what the spec requires
 - Do NOT use console.log or any debugging output
+- Your output must always end with the initialization sequence:
+  reset();
+  draw();
+  Do NOT wrap these calls in any condition. Do NOT wait for DOMContentLoaded. Do NOT put them inside requestAnimationFrame. Just call them directly at the end of the file.
 
 ═══ REFERENCE DEMOS ═══
 
