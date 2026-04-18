@@ -240,7 +240,7 @@ ${sharedSpec}
    "interval-120" → driven by the Auto button's setInterval(..., 120)
    "interval-250" → driven by the Auto button's setInterval(..., 250)
 
-4. CONTROLS — always call addControls() first, then buttons in spec order:
+4. CONTROLS — call addControls() exactly once, before any buttons. Never call it more than once. Then add buttons in spec order:
    type "step"  → addBtn(label, () => { step(); draw(); })
    type "auto"  → (see toggle pattern below)
    type "reset" → addBtn(label, () => { if(autoTmr){clearInterval(autoTmr);autoTmr=null;autoBtn.classList.remove('active')} reset(); draw(); })
@@ -277,7 +277,7 @@ ${sharedSpec}
 - Translate spec.colorMap into a const object at the top of your code: e.g. const COLORS = { background: '#06060c', node: '#4ecdc4' } — never reference "colorMap" as a variable
 - Write clean, readable code — meaningful variable names, logical structure
 - All canvas text must use "Fira Code" font and colors from the palette in sharedSpec
-- Info panels drawn on canvas: rgba(6,6,12,0.9) background, roundRect with radius 8
+- Info panels drawn on canvas: always use rgba(6,6,12,0.9) as background fill — never use a color from COLORS for panel backgrounds — roundRect with radius 8
 - Never use DOM elements for info overlays — everything visual goes on the canvas
 - All mouse coordinate calculations must use getPos(e) — never manually compute clientX offsets
 - The demo must be self-contained: no fetch, no external scripts, no localStorage
@@ -288,7 +288,7 @@ ${sharedSpec}
   reset();
   draw();
   Do NOT wrap these calls in any condition. Do NOT wait for DOMContentLoaded. Do NOT put them inside requestAnimationFrame. Just call them directly at the end of the file.
-- reset() must always generate meaningful initial data (random points, nodes, weights, etc.) so that draw() produces visible content immediately — never leave the canvas empty waiting for user interaction
+- reset() must always generate meaningful initial data (random points, nodes, weights, etc.) so that draw() produces visible content immediately — never leave the canvas empty waiting for user interaction. If spec.interactions.mouse includes "click-add" or "context-menu", reset() must pre-populate at least 8 random points per class so the canvas is never empty on load
 
 ═══ REFERENCE DEMOS ═══
 
