@@ -122,9 +122,10 @@ function addControls(){
 // addBtn(label, onClick) — creates a .btn and appends it to controls bar (or body)
 // Returns the element so you can toggle .active class
 function addBtn(label,onClick){
+  if(!_controls) addControls();
   const b=document.createElement('button');
   b.className='btn'; b.textContent=label; b.onclick=onClick;
-  (_controls||document.body).appendChild(b);
+  _controls.appendChild(b);
   return b;
 }
 

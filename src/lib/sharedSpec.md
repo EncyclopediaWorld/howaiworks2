@@ -144,7 +144,7 @@ const autoBtn = addBtn('⏩ Auto', () => {
   autoBtn.classList.toggle('active');
 });
 ```
-Returns the button element. Appends to controls bar if `addControls()` was called, otherwise to body.
+Returns the button element. Always appends to the controls bar — auto-creates it if not yet created.
 Use `.classList.toggle('active')` for toggle buttons — `.btn.active` turns the button teal.
 
 ---
@@ -173,7 +173,7 @@ For sliders, create `input[type=range]` — it's pre-styled with the teal thumb:
 const slider = document.createElement('input');
 slider.type = 'range'; slider.min = '1'; slider.max = '10'; slider.value = '3';
 slider.oninput = e => { k = +e.target.value; draw(); };
-(_controls || document.body).appendChild(slider);
+addControls().appendChild(slider);
 ```
 
 ---

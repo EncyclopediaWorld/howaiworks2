@@ -277,7 +277,7 @@ ${sharedSpec}
 - Translate spec.colorMap into a const object at the top of your code: e.g. const COLORS = { background: '#06060c', node: '#4ecdc4' } — never reference "colorMap" as a variable
 - Write clean, readable code — meaningful variable names, logical structure
 - All canvas text must use "Fira Code" font and colors from the palette in sharedSpec
-- Info panels drawn on canvas: always use rgba(6,6,12,0.9) as background fill — never use a color from COLORS for panel backgrounds — roundRect with radius 8
+- Info panels drawn on canvas: always use rgba(6,6,12,0.9) as background fill — never use a color from COLORS for panel backgrounds — roundRect with radius 8. Every panel must contain at least one ctx.fillText call — never draw a panel background without text content inside it
 - Never use DOM elements for info overlays — everything visual goes on the canvas
 - All mouse coordinate calculations must use getPos(e) — never manually compute clientX offsets
 - The demo must be self-contained: no fetch, no external scripts, no localStorage
