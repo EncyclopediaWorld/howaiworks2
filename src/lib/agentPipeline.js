@@ -225,7 +225,7 @@ ${sharedSpec}
 
 1. STATE & INIT
    - Declare all state variables at the top
-   - Write a reset() function that reinitialises everything to its starting values
+   - Write a function named exactly reset() — no other name — that reinitialises everything to its starting values
 
 2. DRAW FUNCTION
    - Always start with: ctx.clearRect(0, 0, W, H)
@@ -288,6 +288,7 @@ ${sharedSpec}
   reset();
   draw();
   Do NOT wrap these calls in any condition. Do NOT wait for DOMContentLoaded. Do NOT put them inside requestAnimationFrame. Just call them directly at the end of the file.
+- reset() must always generate meaningful initial data (random points, nodes, weights, etc.) so that draw() produces visible content immediately — never leave the canvas empty waiting for user interaction
 
 ═══ REFERENCE DEMOS ═══
 
