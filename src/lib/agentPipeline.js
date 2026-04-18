@@ -240,7 +240,7 @@ ${sharedSpec}
    "interval-120" → driven by the Auto button's setInterval(..., 120)
    "interval-250" → driven by the Auto button's setInterval(..., 250)
 
-4. CONTROLS — call addControls() exactly once, before any buttons. Never call it more than once. Then add buttons in spec order:
+4. CONTROLS — call addControls() exactly once, before any buttons. Never call it more than once. Never manually create a div with className "demo-controls" — only use addControls(). Then add buttons in spec order:
    type "step"  → addBtn(label, () => { step(); draw(); })
    type "auto"  → (see toggle pattern below)
    type "reset" → addBtn(label, () => { if(autoTmr){clearInterval(autoTmr);autoTmr=null;autoBtn.classList.remove('active')} reset(); draw(); })

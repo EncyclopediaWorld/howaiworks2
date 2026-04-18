@@ -112,6 +112,7 @@ function shimPointerToMouse(c){
 // addControls() — creates the .demo-controls bar below the canvas, returns it
 let _controls=null;
 function addControls(){
+  if(_controls) return _controls;
   _controls=document.createElement('div');
   _controls.className='demo-controls';
   document.body.appendChild(_controls);
