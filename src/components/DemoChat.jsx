@@ -135,7 +135,7 @@ export default function DemoChat({ model }) {
           type="text"
           value={question}
           onChange={e => setQuestion(e.target.value)}
-          placeholder="What part didn't make sense? Ask anything about this demo…"
+          placeholder="Further questions about this model? Ask our multi-agent system to generate a new demo..."
           disabled={!!stage}
           className="demo-chat-input"
         />
