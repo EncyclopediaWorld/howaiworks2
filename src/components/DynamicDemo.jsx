@@ -5,6 +5,9 @@ export default function DynamicDemo({ code, onError }) {
   const [height, setHeight] = useState(360)
   const iframeRef = useRef(null)
 
+  const onErrorRef = useRef(onError)
+  useEffect(() => { onErrorRef.current = onError }, [onError])
+
   useEffect(() => {
     function onMessage(e) {
       if (e.source !== iframeRef.current?.contentWindow) return
@@ -12,12 +15,12 @@ export default function DynamicDemo({ code, onError }) {
         setHeight(e.data.height)
       }
       if (e.data?.type === 'iframeError') {
-        onError?.()
+        onErrorRef.current?.()
       }
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
-  }, [onError])
+  }, [])
 
   const srcdoc = useMemo(() => `<!DOCTYPE html>
 <html>
