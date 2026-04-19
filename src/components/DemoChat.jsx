@@ -83,7 +83,7 @@ export default function DemoChat({ model }) {
     <div className="demo-chat">
       <div className="demo-chat-header">
         <span className="demo-chat-icon">✦</span>
-        <span>Ask AI to explain this demo differently</span>
+        <span style={{fontWeight: 'bold', fontSize: '0.75rem'}}>AskAndSee Demo Generator</span>
       </div>
 
       {needKey && (
