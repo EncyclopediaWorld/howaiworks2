@@ -310,7 +310,7 @@ ${pcaCode}
 ${currentDemoCode}
 ` }
 
-async function agent2(provider, apiKey, spec, currentDemoCode) {
+export async function agent2(provider, apiKey, spec, currentDemoCode) {
   const raw = await callLLM(provider, apiKey, [
     { role: 'system', content: buildAgent2System(currentDemoCode) },
     { role: 'user',   content: `DESIGN SPEC:\n${JSON.stringify(spec, null, 2)}` },
@@ -330,5 +330,5 @@ export async function runPipeline(provider, apiKey, question, currentDemoCode, o
   onStage('Generating code…')
   const code = await agent2(provider, apiKey, spec, currentDemoCode)
 
-  return { explanation, code }
+  return { explanation, code, spec }
 }

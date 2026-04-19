@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { getApiKey, setApiKey, getProvider, setProvider, PROVIDERS } from '../lib/apiKey.js'
-import { runPipeline } from '../lib/agentPipeline.js'
+import { runPipeline, agent2 } from '../lib/agentPipeline.js'
 import { getDemoSource } from '../lib/demoSources.js'
 import DynamicDemo from './DynamicDemo.jsx'
 
@@ -12,6 +12,7 @@ export default function DemoChat({ model }) {
   const [needKey,      setNeedKey]      = useState(false)
   const [keyDraft,     setKeyDraft]     = useState('')
   const [chatProvider, setChatProvider] = useState(() => getProvider())
+  const [retryCount, setRetryCount] = useState(0)
 
   function getCurrentDemoCode() {
     const modulePath = model?.module || ''
@@ -27,15 +28,30 @@ export default function DemoChat({ model }) {
 
     setError(null)
     setResult(null)
+    setRetryCount(0)
     try {
-      const { explanation, code } = await runPipeline(
+      const { explanation, code, spec } = await runPipeline(
         getProvider(),
         getApiKey(),
         q,
         getCurrentDemoCode(),
         setStage,
       )
-      setResult({ explanation, code })
+      setResult({ explanation, code, spec })
+    } catch (err) {
+      setError(err.message || String(err))
+    } finally {
+      setStage(null)
+    }
+  }
+
+  async function handleError() {
+    if (!result?.spec || retryCount >= 2 || stage) return
+    setRetryCount(r => r + 1)
+    setStage('Retrying…')
+    try {
+      const newCode = await agent2(getProvider(), getApiKey(), result.spec, getCurrentDemoCode())
+      setResult(r => ({ ...r, code: newCode }))
     } catch (err) {
       setError(err.message || String(err))
     } finally {
@@ -144,7 +160,7 @@ export default function DemoChat({ model }) {
       {result && (
         <div className="demo-chat-result">
           <p className="demo-chat-explanation">{result.explanation}</p>
-          <DynamicDemo code={result.code} />
+          <DynamicDemo code={result.code} onError={handleError} />
           <div className="demo-chat-result-footer">
             <button className="btn" onClick={() => setResult(null)}>↺ Ask again</button>
           </div>
