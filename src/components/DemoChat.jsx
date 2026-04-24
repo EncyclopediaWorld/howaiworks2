@@ -12,7 +12,8 @@ export default function DemoChat({ model }) {
   const [needKey,      setNeedKey]      = useState(false)
   const [keyDraft,     setKeyDraft]     = useState('')
   const [chatProvider, setChatProvider] = useState(() => getProvider())
-  const [retryCount, setRetryCount] = useState(0)
+  const [retryCount,   setRetryCount]   = useState(0)
+  const [runningTime,  setRunningTime]  = useState(null)
 
   function getCurrentDemoCode() {
     const modulePath = model?.module || ''
@@ -28,9 +29,10 @@ export default function DemoChat({ model }) {
 
     setError(null)
     setResult(null)
+    setRunningTime(null)
     setRetryCount(0)
     try {
-      const { explanation, code, spec } = await runPipeline(
+      const { explanation, code, spec, runningTime: rt } = await runPipeline(
         getProvider(),
         getApiKey(),
         q,
@@ -38,6 +40,7 @@ export default function DemoChat({ model }) {
         setStage,
       )
       setResult({ explanation, code, spec })
+      setRunningTime(rt || null)
     } catch (err) {
       setError(err.message || String(err))
     } finally {
@@ -159,6 +162,11 @@ export default function DemoChat({ model }) {
 
       {result && (
         <div className="demo-chat-result">
+          {runningTime && (
+            <p style={{ fontSize: '0.65rem', color: '#7d7a8c', marginBottom: '0.5rem', fontFamily: 'monospace' }}>
+              Generated in {runningTime}s
+            </p>
+          )}
           <p className="demo-chat-explanation">{result.explanation}</p>
           <DynamicDemo code={result.code} onError={handleError} />
           <div className="demo-chat-result-footer">
