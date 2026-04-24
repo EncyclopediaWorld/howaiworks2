@@ -149,7 +149,7 @@ Use `.classList.toggle('active')` for toggle buttons — `.btn.active` turns the
 
 ---
 
-### `addHint(text)` — one-time hint line below the controls bar
+### `addHint(text)` — one-time hint line above the controls bar
 ```js
 addHint('Left-click to add red points, right-click to add blue points.');
 ```

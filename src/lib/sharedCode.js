@@ -129,11 +129,11 @@ function addBtn(label,onClick){
   return b;
 }
 
-// addHint(text) — displays a .demo-hint line below controls
+// addHint(text) — displays a .demo-hint line above controls
 function addHint(text){
   const d=document.createElement('div');
   d.className='demo-hint'; d.textContent=text;
-  document.body.appendChild(d);
+  _controls ? document.body.insertBefore(d,_controls) : document.body.appendChild(d);
 }
 
 // roundRect polyfill

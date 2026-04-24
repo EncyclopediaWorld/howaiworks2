@@ -80,7 +80,10 @@ Here is the JSON schema you MUST follow (do NOT output this block):
 \`\`\`json
 {
   "concept":  string,   // core idea to visualize — one clear sentence
-  "hint":     string,   // exact text passed to addHint() — actionable ("Click…", "Watch…", "Drag…")
+  "hint":     string,   // REQUIRED — exact text passed to addHint(). Content depends on demo type:
+                        // • canvas interaction (click/drag) → describe mouse actions (e.g. "Click to add red points, right-click for blue.")
+                        // • button-driven / auto-animation → describe what to observe (e.g. "Press Auto to watch the network train step by step.")
+                        // • pure visualization (no direct interaction) → one-sentence description of what is shown
 
   "visual": {
     "main":   string,   // what to draw on canvas and how to divide the space spatially
@@ -123,6 +126,7 @@ Here is the JSON schema you MUST follow (do NOT output this block):
 
 ═══ STRICT RULES ═══
 
+- "hint" is REQUIRED — never leave it empty or omit it
 - Every demo MUST have at least a "reset" button
 - If animation is "interval-*", add an "auto" button with matching interval
 - "click-add" and "context-menu" always appear together (left-click = class 0, right-click = class 1)
@@ -141,7 +145,7 @@ Here is the JSON schema you MUST follow (do NOT output this block):
 - Prefer interactive over static: give the user something to manipulate or explore
 - Canvas logical size is 750×340 — plan your spatial layout explicitly in visual.main
 - Info panels are drawn on canvas with ctx.roundRect, never as DOM elements
-- The hint text should tell the user exactly what to do, not describe the algorithm
+- The hint text should tell the user what to do or observe; for pure visualization demos with no interaction, describe what is shown in one sentence
 
 ═══ SHARED RUNTIME SPEC ═══
 
@@ -240,7 +244,9 @@ ${sharedSpec}
    "interval-120" → driven by the Auto button's setInterval(..., 120)
    "interval-250" → driven by the Auto button's setInterval(..., 250)
 
-4. CONTROLS — call addControls() exactly once, before any buttons. Never call it more than once. Never manually create a div with className "demo-controls" — only use addControls(). Then add buttons in spec order:
+4. HINT — call addHint(spec.hint) once, before addControls()
+
+5. CONTROLS — call addControls() exactly once, after addHint(). Never call it more than once. Never manually create a div with className "demo-controls" — only use addControls(). Then add buttons in spec order:
    type "step"  → addBtn(label, () => { step(); draw(); })
    type "auto"  → (see toggle pattern below)
    type "reset" → addBtn(label, () => { if(autoTmr){clearInterval(autoTmr);autoTmr=null;autoBtn.classList.remove('active')} reset(); draw(); })
@@ -253,7 +259,7 @@ ${sharedSpec}
      else { autoTmr = setInterval(() => { step(); draw(); }, interval); autoBtn.classList.add('active'); }
    });
 
-5. SLIDERS — for each entry in spec.interactions.sliders:
+6. SLIDERS — for each entry in spec.interactions.sliders:
    const lbl = document.createElement('label'); lbl.textContent = label;
    const sl = document.createElement('input'); sl.type='range';
    sl.min=min; sl.max=max; sl.value=default;
@@ -261,7 +267,7 @@ ${sharedSpec}
    const ctrl = document.querySelector('.demo-controls');
    ctrl.appendChild(lbl); ctrl.appendChild(sl);
 
-6. MOUSE EVENTS — map spec.interactions.mouse values:
+7. MOUSE EVENTS — map spec.interactions.mouse values:
    "hover"          → canvas.onmousemove / canvas.onmouseleave using getPos(e)
    "click-add"      → canvas.onclick using getPos(e) — adds class-0 point
    "context-menu"   → canvas.oncontextmenu using getPos(e) — adds class-1 point
@@ -269,8 +275,6 @@ ${sharedSpec}
    "drag"           → canvas.onmousedown / onmousemove / onmouseup / onmouseleave
 
    If spec.interactions.shimTouch is true → call shimPointerToMouse(canvas) before setting mouse handlers
-
-7. HINT — call addHint(spec.hint) last, after all controls
 
 ═══ CODE QUALITY RULES ═══
 
