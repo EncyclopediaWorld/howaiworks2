@@ -325,7 +325,6 @@ export async function agent2(provider, apiKey, spec, currentDemoCode) {
 // ─── Pipeline ─────────────────────────────────────────────────────────────────
 
 export async function runPipeline(provider, apiKey, question, currentDemoCode, onStage) {
-  const startTime = Date.now()
   onStage('Analyzing…')
   const [explanation, spec] = await Promise.all([
     agent1A(provider, apiKey, question, currentDemoCode),
@@ -335,6 +334,5 @@ export async function runPipeline(provider, apiKey, question, currentDemoCode, o
   onStage('Generating code…')
   const code = await agent2(provider, apiKey, spec, currentDemoCode)
 
-  const runningTime = ((Date.now() - startTime) / 1000).toFixed(1)
-  return { explanation, code, spec, runningTime }
+  return { explanation, code, spec }
 }
